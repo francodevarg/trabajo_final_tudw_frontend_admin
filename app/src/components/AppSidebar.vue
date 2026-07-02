@@ -69,7 +69,7 @@ function logout() {
     <!-- Brand -->
     <div class="h-16 flex items-center gap-2.5 px-5 border-b border-slate-200">
       <div class="w-9 h-9 rounded-lg bg-primary-600 flex items-center justify-center">
-        <HeartPulse class="h-6 w-6 text-primary text-center mb-1"/>
+        <HeartPulse class="h-5 w-5 text-white"/>
       </div>
       <div>
         <p class="text-sm font-semibold text-slate-900 leading-tight">MediCare</p>

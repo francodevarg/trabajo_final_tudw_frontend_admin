@@ -1,1 +1,121 @@
 @import "tailwindcss";
+
+/* ── Design tokens (Tailwind v4 @theme) ─────────────────────────── */
+@theme {
+  /* Primary — sky → blue → indigo */
+  --color-primary-50: oklch(0.97 0.01 240);
+  --color-primary-100: oklch(0.93 0.02 240);
+  --color-primary-200: oklch(0.87 0.04 240);
+  --color-primary-300: oklch(0.78 0.06 240);
+  --color-primary-400: oklch(0.68 0.09 238);
+  --color-primary-500: oklch(0.58 0.12 236);
+  --color-primary-600: oklch(0.50 0.14 235);
+  --color-primary-700: oklch(0.43 0.13 234);
+  --color-primary-800: oklch(0.36 0.11 233);
+  --color-primary-900: oklch(0.30 0.09 232);
+
+  /* Success — green */
+  --color-success-50: oklch(0.96 0.02 150);
+  --color-success-100: oklch(0.92 0.04 150);
+  --color-success-200: oklch(0.85 0.07 150);
+  --color-success-300: oklch(0.76 0.10 148);
+  --color-success-400: oklch(0.66 0.13 146);
+  --color-success-500: oklch(0.56 0.14 145);
+  --color-success-600: oklch(0.46 0.13 144);
+  --color-success-700: oklch(0.38 0.11 143);
+  --color-success-800: oklch(0.32 0.09 142);
+  --color-success-900: oklch(0.27 0.07 141);
+
+  /* Error — red */
+  --color-error-50: oklch(0.97 0.01 25);
+  --color-error-100: oklch(0.93 0.03 25);
+  --color-error-200: oklch(0.86 0.06 22);
+  --color-error-300: oklch(0.77 0.09 20);
+  --color-error-400: oklch(0.67 0.12 18);
+  --color-error-500: oklch(0.57 0.14 17);
+  --color-error-600: oklch(0.48 0.13 16);
+  --color-error-700: oklch(0.40 0.11 15);
+  --color-error-800: oklch(0.34 0.09 14);
+  --color-error-900: oklch(0.28 0.07 13);
+
+  /* Warning — amber */
+  --color-warning-50: oklch(0.97 0.02 80);
+  --color-warning-100: oklch(0.93 0.04 78);
+  --color-warning-200: oklch(0.87 0.07 76);
+  --color-warning-300: oklch(0.80 0.10 74);
+  --color-warning-400: oklch(0.74 0.12 72);
+  --color-warning-500: oklch(0.68 0.13 70);
+  --color-warning-600: oklch(0.58 0.12 68);
+  --color-warning-700: oklch(0.48 0.10 66);
+  --color-warning-800: oklch(0.38 0.08 64);
+  --color-warning-900: oklch(0.30 0.06 62);
+
+  /* Animations */
+  --animate-slide-up: slide-up 0.3s ease-out;
+  --animate-fade-in: fade-in 0.2s ease-out;
+
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+}
+
+/* ── Reusable component classes ──────────────────────────────────── */
+@layer utilities {
+  /* Form label */
+  .label {
+    @apply block text-sm font-medium text-slate-700 mb-1;
+  }
+
+  /* Text input */
+  .input {
+    @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800
+           placeholder:text-slate-400
+           outline-none transition
+           focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg
+           bg-primary-600 px-4 py-2 text-sm font-medium text-white
+           shadow-sm transition
+           hover:bg-primary-700
+           active:bg-primary-800
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg
+           px-3 py-2 text-sm font-medium text-slate-600
+           transition
+           hover:bg-slate-100
+           active:bg-slate-200;
+  }
+
+  /* Small button */
+  .btn-sm {
+    @apply px-2.5 py-1.5 text-xs;
+  }
+
+  /* Soft shadow (toasts, cards) */
+  .shadow-soft {
+    box-shadow: 0 4px 24px -4px rgb(0 0 0 / 0.08);
+  }
+
+  /* Badge base */
+  .badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+  .badge-info {
+    @apply bg-primary-50 text-primary-700 border border-primary-200;
+  }
+  .badge-success {
+    @apply bg-success-50 text-success-700 border border-success-200;
+  }
+}

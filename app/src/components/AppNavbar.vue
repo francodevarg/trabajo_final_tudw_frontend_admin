@@ -42,7 +42,7 @@ const subtitle = computed(() => {
 <template>
   <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-20">
     <div class="flex items-center gap-3">
-      <button class="btn-ghost btn-sm !p-1.5 lg:hidden" @click="onMenu" aria-label="Abrir menú">
+      <button class="btn-sm !p-1.5 lg:hidden" @click="onMenu" aria-label="Abrir menú">
         <Menu class="h-6 w-6 text-primary text-center mb-1" />
       </button>
       <div>
@@ -54,7 +54,9 @@ const subtitle = computed(() => {
       <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100">
         <!-- <span class="badge" :class="auth.rol === 'ADMIN' ? 'badge-info' : 'badge-success'">
           {{ auth.rol === 'ADMIN' ? 'Administrador' : 'Médico' }}
+
         </span> -->
+        Admin
       </div>
       <div class="w-9 h-9 rounded-full bg-primary-600 text-white flex items-center justify-center font-semibold text-sm">
         <!-- {{ auth.usuario?.nombre?.charAt(0).toUpperCase() }} -->
