@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-// import { useAuthStore } from '@/stores/auth.store'
+
+const ACCESS_KEY = 'medicare_access'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -27,6 +28,16 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach((to) => {
+  const token = localStorage.getItem(ACCESS_KEY)
+  if (!to.meta.public && !token) {
+    return { name: 'login' }
+  }
+  if (to.name === 'login' && token) {
+    return { path: '/admin' }
+  }
 })
 
 export default router

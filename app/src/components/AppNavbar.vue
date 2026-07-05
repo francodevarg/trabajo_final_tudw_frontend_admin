@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-// import { useAuthStore } from '@/stores/auth.store'
+import { useAuthStore } from '@/stores/auth.store'
 import { Menu } from "lucide-vue-next"
 defineProps<{ onMenu: () => void }>()
 
 const route = useRoute()
-// const auth = useAuthStore()
+const auth = useAuthStore()
 
 const title = computed(() => {
   const map: Record<string, string> = {
@@ -25,15 +25,9 @@ const title = computed(() => {
   return map[route.name as string] || 'MediCare'
 })
 
-// const subtitle = computed(() => {
-//   if (auth.rol === 'ADMIN') return 'Panel de administración'
-//   if (auth.rol === 'MEDICO') return `Dr. ${auth.medico?.nombre ?? ''} ${auth.medico?.apellido ?? ''}`
-//   return ''
-// })
 
 const subtitle = computed(() => {
-  // return auth.rol === 'ADMIN' ? 'Panel de administración' : 'Panel del médico'
-  return 'Panel de administración'
+  return auth.userGroup === 'ADMIN' ? 'Panel de administración' : 'Panel del médico'
 })
 
 
@@ -51,16 +45,13 @@ const subtitle = computed(() => {
       </div>
     </div>
     <div class="flex items-center gap-3">
-      <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100">
-        <!-- <span class="badge" :class="auth.rol === 'ADMIN' ? 'badge-info' : 'badge-success'">
-          {{ auth.rol === 'ADMIN' ? 'Administrador' : 'Médico' }}
-
-        </span> -->
-        Admin
+      <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full">
+        <span class="badge" :class="auth.userGroup === 'ADMIN' ? 'badge-info' : 'badge-success'">
+          {{ auth.userGroup === 'ADMIN' ? 'Administrador' : 'Médico' }}
+        </span>
       </div>
       <div class="w-9 h-9 rounded-full bg-primary-600 text-white flex items-center justify-center font-semibold text-sm">
-        <!-- {{ auth.usuario?.nombre?.charAt(0).toUpperCase() }} -->
-          D
+        {{ auth.userEmail?.charAt(0).toUpperCase() }}
       </div>
     </div>
   </header>

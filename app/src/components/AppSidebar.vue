@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-// import { useAuthStore } from '@/stores/auth.store'
+import { useAuthStore } from '@/stores/auth.store'
 import AppIcon from './AppIcon.vue'
 import { HeartPulse } from 'lucide-vue-next';
 
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ (e: 'update:open', v: boolean): void }>()
 
-// const auth = useAuthStore()
+const auth = useAuthStore()
 const route = useRoute()
 const router = useRouter()
 
@@ -35,8 +35,8 @@ const medicoItems: NavItem[] = [
   { name: 'Historial', to: '/medico/turnos', icon: 'historial' },
 ]
 
-// const items = computed(() => (auth.rol === 'ADMIN' ? adminItems : medicoItems))
-const items = computed(() => adminItems)
+const items = computed(() => (auth.userGroup === 'ADMIN' ? adminItems : medicoItems))
+
 
 function isActive(to: string) {
   if (to === '/admin') return route.path === '/admin'
@@ -48,8 +48,8 @@ function navigate(to: string) {
   emit('update:open', false)
 }
 
-function logout() {
-//   auth.logout()
+async function logout() {
+  await auth.logout()
   router.push('/login')
 }
 </script>
@@ -80,8 +80,7 @@ function logout() {
     <!-- Nav -->
     <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
       <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
-        <!-- {{ auth.rol === 'ADMIN' ? 'Administración' : 'Médico' }} -->
-        Administración
+        {{ auth.userGroup === 'ADMIN' ? 'Administración' : 'Médico' }}
       </p>
       <button
         v-for="item in items"
@@ -101,12 +100,11 @@ function logout() {
     <div class="p-3 border-t border-slate-200">
       <div class="flex items-center gap-3 px-2 py-2">
         <div class="w-9 h-9 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-semibold text-sm">
-          <!-- {{ auth.usuario?.nombre?.charAt(0).toUpperCase() }} -->
-            D
+          {{ auth.userEmail?.charAt(0).toUpperCase() }}
         </div>
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-slate-800 truncate">Dummy User</p>
-          <p class="text-xs text-slate-400 truncate">dummy@example.com</p>
+          <p class="text-sm font-medium text-slate-800 truncate"> {{ auth.userFirstName }} {{ auth.userLastName }}</p>
+          <p class="text-xs text-slate-400 truncate">{{ auth.userEmail }}</p>
         </div>
         <button class="btn-ghost btn-sm !p-1.5" @click="logout" title="Cerrar sesión">
           <AppIcon name="logout" class="w-5 h-5" />

@@ -86,3 +86,55 @@ export interface AuthState {
   usuario: Usuario | null
   medico: Medico | null
 }
+
+export interface Specialty {
+  id: string
+  name: string
+  slug: string
+}
+
+export interface OtpRequest {
+  email: string
+}
+
+export interface OtpResponse {
+  detail: string
+}
+
+export interface OtpVerify {
+  email: string
+  otp: string
+}
+
+export interface OtpTokens {
+  access: string
+  refresh: string
+}
+
+export interface AuthError {
+  detail?: string
+  email?: string[]
+  otp?: string[]
+}
+
+export interface JwtPayload {
+  token_type: string
+  exp: number
+  iat: number
+  jti: string
+  user_id: number
+  group: string
+  permissions: string[]
+  email: string
+  first_name: string
+  last_name: string
+}
+
+export type PermissionMode = 'or' | 'and'
+
+export interface PermissionConfig {
+  permissions: string[]
+  mode?: PermissionMode
+}
+
+export type PermissionValue = string | string[] | PermissionConfig
