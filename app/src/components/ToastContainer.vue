@@ -1,6 +1,20 @@
 <script setup lang="ts">
 import { useUiStore } from '@/stores/ui.store'
-import AppIcon from './AppIcon.vue'
+import {
+  CircleCheck,
+  TriangleAlert,
+  Info,
+  X,
+} from 'lucide-vue-next'
+
+const icons: any = {
+  check: CircleCheck,
+  warning: TriangleAlert,
+  info: Info,
+  close: X,
+}
+
+
 
 const ui = useUiStore()
 
@@ -16,16 +30,12 @@ const styles: Record<string, { bg: string; icon: string; iconColor: string }> = 
   <Teleport to="body">
     <div class="fixed top-4 right-4 z-[60] flex flex-col gap-2 w-80 max-w-[calc(100vw-2rem)]">
       <TransitionGroup name="toast">
-        <div
-          v-for="t in ui.toasts"
-          :key="t.id"
-          class="flex items-start gap-3 p-3 rounded-lg border shadow-soft animate-slide-up"
-          :class="styles[t.type].bg"
-        >
-          <AppIcon :name="styles[t.type].icon" :class="['w-5 h-5 mt-0.5 flex-shrink-0', styles[t.type].iconColor]" />
+        <div v-for="t in ui.toasts" :key="t.id"
+          class="flex items-start gap-3 p-3 rounded-lg border shadow-soft animate-slide-up" :class="styles[t.type].bg">
+          <component :is="icons[styles[t.type].icon]" :class="styles[t.type].iconColor" class="w-5 h-5 mt-0.5" />
           <p class="text-sm text-slate-700 flex-1">{{ t.message }}</p>
           <button class="text-slate-400 hover:text-slate-600" @click="ui.dismiss(t.id)">
-            <AppIcon name="close" class="w-4 h-4" />
+            <component :is="icons.close" class="w-4 h-4" />
           </button>
         </div>
       </TransitionGroup>
@@ -38,6 +48,7 @@ const styles: Record<string, { bg: string; icon: string; iconColor: string }> = 
 .toast-leave-active {
   transition: all 0.25s ease;
 }
+
 .toast-enter-from,
 .toast-leave-to {
   opacity: 0;

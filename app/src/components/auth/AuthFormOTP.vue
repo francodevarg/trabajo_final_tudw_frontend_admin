@@ -1,88 +1,67 @@
 <template>
-        <!-- Step 1: Email -->
-        <template v-if="!showOtp">
-          <h2 class="text-2xl font-semibold text-slate-900">Iniciar sesión</h2>
-          <p class="text-sm text-slate-500 mt-1">Ingresa tu email para recibir un código de verificación.</p>
+  <!-- Step 1: Email -->
+  <template v-if="!showOtp">
+    <h2 class="text-2xl font-semibold text-slate-900">Iniciar sesión</h2>
+    <p class="text-sm text-slate-500 mt-1">Ingresa tu email para recibir un código de verificación.</p>
 
-          <form @submit.prevent="submitEmail" class="mt-8 space-y-4">
-            <div>
-              <label class="label" for="email">Email</label>
-              <input
-                id="email"
-                v-model="email"
-                type="email"
-                required
-                autocomplete="email"
-                class="input"
-                placeholder="nombre@correo.com"
-              />
-            </div>
+    <form @submit.prevent="submitEmail" class="mt-8 space-y-4">
+      <div>
+        <label class="label" for="email">Email</label>
+        <input id="email" v-model="email" type="email" required autocomplete="email" class="input"
+          placeholder="nombre@correo.com" />
+      </div>
 
-            <p v-if="error" class="text-sm text-error-600 bg-error-50 border border-error-200 rounded-lg px-3 py-2">
-              {{ error }}
-            </p>
+      <p v-if="error" class="text-sm text-error-600 bg-error-50 border border-error-200 rounded-lg px-3 py-2">
+        {{ error }}
+      </p>
 
-            <button type="submit" class="btn-primary w-full !py-2.5" :disabled="loading || !email.trim()">
-              <span v-if="loading" class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
-              {{ loading ? 'Enviando...' : 'Enviar código' }}
-            </button>
-          </form>
-        </template>
+      <button type="submit" class="btn-primary w-full !py-2.5" :disabled="loading || !email.trim()">
+        <span v-if="loading" class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
+        {{ loading ? 'Iniciando...' : 'Iniciar sesión' }}
+      </button>
+    </form>
+  </template>
 
-        <!-- Step 2: OTP -->
-        <template v-else>
-          <div class="animate-fade-in">
-            <button
-              type="button"
-              class="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-6 transition"
-              @click="goBack"
-            >
-              <ArrowLeft class="w-4 h-4" />
-              Volver
-            </button>
+  <!-- Step 2: OTP -->
+  <template v-else>
+    <div class="animate-fade-in">
+      <button type="button"
+        class="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-6 transition" @click="goBack">
+        <ArrowLeft class="w-4 h-4" />
+        Volver
+      </button>
 
-            <div class="w-14 h-14 rounded-2xl bg-primary-100 flex items-center justify-center mb-5">
-              <ShieldCheck class="w-7 h-7 text-primary-600" />
-            </div>
+      <div class="w-14 h-14 rounded-2xl bg-primary-100 flex items-center justify-center mb-5">
+        <ShieldCheck class="w-7 h-7 text-primary-600" />
+      </div>
 
-            <h2 class="text-2xl font-semibold text-slate-900">Verificar código</h2>
-            <p class="text-sm text-slate-500 mt-1">
-              Ingresá el código de 6 dígitos enviado a<br />
-              <span class="font-medium text-slate-700">{{ email }}</span>
-            </p>
+      <h2 class="text-2xl font-semibold text-slate-900">Verificar código</h2>
+      <p class="text-sm text-slate-500 mt-1">
+        Ingresá el código de 6 dígitos enviado a<br />
+        <span class="font-medium text-slate-700">{{ email }}</span>
+      </p>
 
-            <!-- OTP inputs -->
-            <div class="mt-8 flex justify-center gap-2.5">
-              <input
-                v-for="(_, i) in 6"
-                :key="i"
-                :ref="el => { if (el) otpRefs[i] = el as HTMLInputElement }"
-                type="text"
-                inputmode="numeric"
-                maxlength="1"
-                :value="otp[i]"
-                class="w-11 h-12 text-center text-lg font-semibold rounded-lg border border-slate-300 bg-white text-slate-800 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
-                :class="{ 'border-error-500 focus:border-error-500 focus:ring-error-500/20': otpError }"
-                @input="handleOtpInput(i, $event)"
-                @keydown="handleOtpKeydown(i, $event)"
-                @paste="handleOtpPaste"
-              />
-            </div>
+      <!-- OTP inputs -->
+      <div class="mt-8 flex justify-center gap-2.5">
+        <input v-for="(_, i) in 6" :key="i" :ref="el => { if (el) otpRefs[i] = el as HTMLInputElement }" type="text"
+          inputmode="numeric" maxlength="1" :value="otp[i]"
+          class="w-11 h-12 text-center text-lg font-semibold rounded-lg border border-slate-300 bg-white text-slate-800 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
+          :class="{ 'border-error-500 focus:border-error-500 focus:ring-error-500/20': otpError }"
+          @input="handleOtpInput(i, $event)" @keydown="handleOtpKeydown(i, $event)" @paste="handleOtpPaste" />
+      </div>
 
-            <p v-if="otpError" class="text-sm text-error-600 text-center mt-4">
-              {{ otpError }}
-            </p>
+      <p v-if="otpError" class="text-sm text-error-600 text-center mt-4">
+        {{ otpError }}
+      </p>
 
-            <button
-              class="btn-primary w-full !py-2.5 mt-6"
-              :disabled="otpLoading || otp.some(d => d === '')"
-              @click="verifyOtp"
-            >
-              <span v-if="otpLoading" class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
-              {{ otpLoading ? 'Verificando...' : 'Verificar' }}
-            </button>
-          </div>
-        </template>
+      <button class="btn-primary w-full !py-2.5 mt-6" :disabled="otpLoading || otp.some(d => d === '')"
+        @click="verifyOtp">
+        <span v-if="otpLoading"
+          class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
+        {{ otpLoading ? 'Verificando...' : 'Verificar' }}
+      </button>
+    </div>
+  </template>
 </template>
 
 

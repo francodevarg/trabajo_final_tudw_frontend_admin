@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.store'
-import AppIcon from './AppIcon.vue'
 import {
   CalendarDays,
   Stethoscope,
@@ -10,7 +9,8 @@ import {
   ShieldPlus,
   ShieldCheck,
   ChartColumn,
-  HeartPulse
+  HeartPulse,
+  LogOut,
 } from 'lucide-vue-next'
 
 const props = defineProps<{ open: boolean }>()
@@ -100,7 +100,7 @@ async function logout() {
           <p class="text-xs text-slate-400 truncate">{{ auth.userEmail }}</p>
         </div>
         <button class="btn-ghost btn-sm !p-1.5" @click="logout" title="Cerrar sesión">
-          <AppIcon name="logout" class="w-5 h-5" />
+          <LogOut class="w-5 h-5" />
         </button>
       </div>
     </div>
