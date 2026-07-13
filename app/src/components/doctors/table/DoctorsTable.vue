@@ -26,15 +26,18 @@ const emit = defineEmits<{
 
   <DoctorsTableEmpty v-else-if="items.length === 0" />
 
-  <table v-else class="w-full text-sm">
 
-    <DoctorTableHeader />
+  <div v-else class="overflow-hidden rounded-xl border border-slate-200 bg-white">
+    <table class="w-full text-sm">
 
-    <tbody class="divide-y divide-slate-100">
-      <DoctorTableRow v-for="item in items" :key="item.id" :item="item" @view="emit('view', $event)"
-        @edit="emit('edit', $event)" @delete="emit('delete', $event)"
-        @sendWelcomeEmail="emit('sendWelcomeEmail', $event)" />
-    </tbody>
+      <DoctorTableHeader />
 
-  </table>
+      <tbody class="divide-y divide-slate-100">
+        <DoctorTableRow v-for="item in items" :key="item.id" :item="item" @view="emit('view', $event)"
+          @edit="emit('edit', $event)" @delete="emit('delete', $event)"
+          @sendWelcomeEmail="emit('sendWelcomeEmail', $event)" />
+      </tbody>
+
+    </table>
+  </div>
 </template>
