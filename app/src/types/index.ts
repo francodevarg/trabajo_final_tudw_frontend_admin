@@ -1,140 +1,69 @@
-export type Rol = 'ADMIN' | 'MEDICO'
+/* ── Domain models ── */
+export type {
+  Doctor,
+  DoctorAvailability,
+} from './doctor/doctor.types'
 
-export type EstadoTurno = 'PENDIENTE' | 'ATENDIDO' | 'CANCELADO'
+export type {
+  Specialty,
+} from './specialty/specialty.types'
 
-export interface Usuario {
-  id: string
-  nombre: string
-  email: string
-  password: string
-  rol: Rol
-  activo: boolean
-}
+export type {
+  Insurance,
+} from './insurance/insurance.types'
 
-export interface Disponibilidad {
-  id: string
-  dia: string
-  horaInicio: string
-  horaFin: string
-}
+export type {
+  JwtPayload,
+  OtpTokens,
+} from './auth/auth.types'
 
-export interface Medico {
-  id: string
-  nombre: string
-  apellido: string
-  matricula: string
-  especialidadId: string
-  email: string
-  telefono: string
-  disponibilidad: Disponibilidad[]
-  usuarioId?: string
-}
+export type {
+  PermissionMode,
+  PermissionConfig,
+  PermissionValue,
+} from './permissions/permissions.types'
 
-export interface EntradaHistorial {
-  id: string
-  fecha: string
-  medicoId: string
-  diagnostico: string
-  tratamiento: string
-  observaciones: string
-}
+export type {
+  EmailStatus,
+  DayOfWeek,
+} from './common/common.types'
 
-export interface Paciente {
-  id: string
-  nombre: string
-  apellido: string
-  dni: string
-  fechaNacimiento: string
-  telefono: string
-  email: string
-  historialClinico: EntradaHistorial[]
-}
+/* ── DTOs ── */
+export type {
+  DoctorDTO,
+  DoctorCreateDTO,
+  DoctorAvailabilityDTO,
+} from './doctor/doctor.dto'
 
-export interface Especialidad {
-  id: string
-  nombre: string
-  descripcion: string
-}
+export type {
+  SpecialtyDTO,
+} from './specialty/specialty.dto'
 
-export interface Turno {
-  id: string
-  medicoId: string
-  pacienteId: string
-  fecha: string
-  hora: string
-  estado: EstadoTurno
-  motivo: string
-}
+export type {
+  InsuranceDTO,
+} from './insurance/insurance.dto'
 
-export interface Atencion {
-  id: string
-  turnoId: string
-  medicoId: string
-  pacienteId: string
-  diagnostico: string
-  observaciones: string
-  tratamiento: string
-  fecha: string
-}
+export type {
+  OtpRequest,
+  OtpResponse,
+  OtpVerify,
+  AuthError,
+} from './auth/auth.dto'
 
-export interface RolPermisos {
-  rol: Rol
-  permisos: string[]
-}
+/* ── Mappers ── */
+export {
+  doctorDtoToDomain,
+  doctorDomainToCreateDto,
+  dtoAvailToDomain,
+  domainAvailToDto,
+} from './doctor/doctor.mapper'
 
-export interface AuthState {
-  usuario: Usuario | null
-  medico: Medico | null
-}
+export {
+  specialtyDtoToDomain,
+  specialtyDomainToDto,
+} from './specialty/specialty.mapper'
 
-export interface Specialty {
-  id: string
-  name: string
-  slug: string
-}
-
-export interface OtpRequest {
-  email: string
-}
-
-export interface OtpResponse {
-  detail: string
-}
-
-export interface OtpVerify {
-  email: string
-  otp: string
-}
-
-export interface OtpTokens {
-  access: string
-  refresh: string
-}
-
-export interface AuthError {
-  detail?: string
-  email?: string[]
-  otp?: string[]
-}
-
-export interface JwtPayload {
-  token_type: string
-  exp: number
-  iat: number
-  jti: string
-  user_id: number
-  group: string
-  permissions: string[]
-  email: string
-  first_name: string
-  last_name: string
-}
-
-export type PermissionMode = 'or' | 'and'
-
-export interface PermissionConfig {
-  permissions: string[]
-  mode?: PermissionMode
-}
-
-export type PermissionValue = string | string[] | PermissionConfig
+export {
+  insuranceDtoToDomain,
+  insuranceDomainToDto,
+} from './insurance/insurance.mapper'

@@ -6,19 +6,27 @@ import { specialtiesService } from '@/services/specialties.service'
 export const useSpecialtiesStore = defineStore('specialties', () => {
   const items = ref<Specialty[]>([])
   const loading = ref(false)
+  const loaded = ref(false)
   const error = ref('')
 
-  async function fetchAll() {
+  async function fetchAll(force = false) {
+    if (loaded.value && !force) return
     loading.value = true
     error.value = ''
     try {
       const { data } = await specialtiesService.getAll()
       items.value = data
+      loaded.value = true
     } catch (e: any) {
       error.value = e.message || 'Error al cargar especialidades'
     } finally {
       loading.value = false
     }
+  }
+
+  async function refresh() {
+    loaded.value = false
+    await fetchAll(true)
   }
 
   async function create(name: string) {
@@ -39,5 +47,5 @@ export const useSpecialtiesStore = defineStore('specialties', () => {
     items.value = items.value.filter(s => s.id !== id)
   }
 
-  return { items, loading, error, fetchAll, create, update, remove }
+  return { items, loading, loaded, error, fetchAll, refresh, create, update, remove }
 })

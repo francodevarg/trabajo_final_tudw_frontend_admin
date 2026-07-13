@@ -15,6 +15,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
     children: [
         {
+          path: 'admin/medicos',
+          name: 'admin-medicos',
+          component: () => import('@/views/admin/DoctorsView.vue'),
+          meta: { rol: 'ADMIN' },
+        },
+        {
           path: 'admin/especialidades',
           name: 'admin-especialidades',
           component: () => import('@/views/admin/SpecialtiesView.vue'),
