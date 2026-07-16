@@ -9,7 +9,7 @@ const props = defineProps<{
     mode: 'create' | 'edit'
     doctor: DoctorDTO | null
     loading?: boolean
-    emailError?: string
+    emailError?: string | null
 }>()
 
 const emit = defineEmits<{

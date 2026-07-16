@@ -11,9 +11,6 @@ const props = defineProps<{
   doctor: DoctorDTO
 }>()
 
-const emit = defineEmits<{
-  (e: 'sendWelcomeEmail'): void
-}>()
 
 const showFullDescription = ref(false)
 
@@ -104,11 +101,6 @@ const hasLongDescription = computed(() =>
             :class="doctor.is_active !== false ? 'bg-emerald-500' : 'bg-slate-400'" />
           {{ doctor.is_active !== false ? 'Activo' : 'Inactivo' }}
         </span>
-        <button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium border transition"
-          :class="emailStatusConfig.class" :disabled="doctor.email_status === 'sent'" @click="emit('sendWelcomeEmail')">
-          <component :is="emailStatusConfig.icon" class="w-4 h-4" />
-          {{ emailStatusConfig.text }}
-        </button>
       </div>
     </div>
 

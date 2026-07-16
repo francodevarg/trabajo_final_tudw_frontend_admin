@@ -5,7 +5,6 @@ import AppNavbar from '@/components/AppNavbar.vue'
 import ToastContainer from '@/components/ToastContainer.vue'
 
 const sidebarOpen = ref(false)
-
 </script>
 
 <template>
@@ -13,7 +12,7 @@ const sidebarOpen = ref(false)
     <AppSidebar v-model:open="sidebarOpen" />
     <div class="flex-1 flex flex-col min-w-0">
       <AppNavbar :on-menu="() => (sidebarOpen = true)" />
-      <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+      <main class="flex-1 p-5 sm:p-6 lg:p-8 overflow-x-auto app-scroll">
         <RouterView v-slot="{ Component }">
           <Transition name="page" mode="out-in">
             <component :is="Component" />
@@ -32,7 +31,7 @@ const sidebarOpen = ref(false)
 }
 .page-enter-from {
   opacity: 0;
-  transform: translateY(6px);
+  transform: translateY(4px);
 }
 .page-leave-to {
   opacity: 0;

@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.store'
 import { Menu } from "lucide-vue-next"
+
 defineProps<{ onMenu: () => void }>()
 
 const route = useRoute()
@@ -10,7 +11,7 @@ const auth = useAuthStore()
 
 const title = computed(() => {
   const map: Record<string, string> = {
-    admin: 'Dashboard',
+    admin: 'Turnos',
     'admin-medicos': 'Médicos',
     'admin-pacientes': 'Pacientes',
     'admin-especialidades': 'Especialidades',
@@ -25,35 +26,38 @@ const title = computed(() => {
   return map[route.name as string] || 'MediCare'
 })
 
-
 const subtitle = computed(() => {
   return auth.userGroup === 'ADMIN' ? 'Panel de administración' : 'Panel del médico'
 })
 
-
+const userInitial = computed(() => auth.userEmail?.charAt(0).toUpperCase() ?? 'U')
 </script>
 
 <template>
-  <header
-    class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-20">
+  <header class="h-14 bg-white flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-20">
     <div class="flex items-center gap-3">
-      <button class="btn-sm !p-1.5 lg:hidden" @click="onMenu" aria-label="Abrir menú">
-        <Menu class="h-6 w-6 text-primary text-center mb-1" />
+      <button class="flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors lg:hidden -ml-1.5" @click="onMenu" aria-label="Abrir menú">
+        <Menu class="w-5 h-5" />
       </button>
-      <div>
-        <h1 class="text-base sm:text-lg font-semibold text-slate-900 leading-tight">{{ title }}</h1>
-        <p class="text-xs text-slate-400 leading-tight hidden sm:block">{{ subtitle }}</p>
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-lg bg-primary-100 flex items-center justify-center lg:hidden">
+          <span class="text-primary-600 text-xs font-bold">M</span>
+        </div>
+        <h1 class="text-base font-semibold text-slate-900">{{ title }}</h1>
+        <span class="hidden sm:inline text-xs text-slate-300">·</span>
+        <p class="hidden sm:block text-xs text-slate-400">{{ subtitle }}</p>
       </div>
     </div>
     <div class="flex items-center gap-3">
-      <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full">
-        <span class="badge" :class="auth.userGroup === 'ADMIN' ? 'badge-info' : 'badge-success'">
-          {{ auth.userGroup === 'ADMIN' ? 'Administrador' : 'Médico' }}
+      <div class="hidden sm:flex items-center">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium bg-slate-100 text-slate-500">
+          {{ auth.userGroup === 'ADMIN' ? 'Admin' : 'Médico' }}
         </span>
       </div>
       <div
-        class="w-9 h-9 rounded-full bg-primary-600 text-white flex items-center justify-center font-semibold text-sm">
-        {{ auth.userEmail?.charAt(0).toUpperCase() }}
+        class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 text-white flex items-center justify-center font-semibold text-xs shadow-sm"
+      >
+        {{ userInitial }}
       </div>
     </div>
   </header>

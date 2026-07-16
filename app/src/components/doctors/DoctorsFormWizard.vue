@@ -95,6 +95,12 @@ watch(() => props.emailError, (err) => {
 function extractId(s: any | null): number | undefined {
   return specialtiesStore.items.find(spec => spec.id === s?.id)?.id
 }
+/* ── Step state ── */
+
+const STEP_LABELS = ['Personal', 'Profesional', 'Obras sociales', 'Disponibilidad']
+const STEP_SCHEMAS = [personalSchema, professionalSchema, insuranceSchema, availabilitySchema]
+const currentStep = ref(0)
+const stepErrors = ref<string[]>([])
 
 watch(() => props.initial, (v) => {
   if (v) {
@@ -122,12 +128,7 @@ watch(() => props.initial, (v) => {
   }
 }, { immediate: true })
 
-/* ── Step state ── */
 
-const STEP_LABELS = ['Personal', 'Profesional', 'Obras sociales', 'Disponibilidad']
-const STEP_SCHEMAS = [personalSchema, professionalSchema, insuranceSchema, availabilitySchema]
-const currentStep = ref(0)
-const stepErrors = ref<string[]>([])
 
 async function validateCurrentStep(): Promise<boolean> {
   stepErrors.value = []

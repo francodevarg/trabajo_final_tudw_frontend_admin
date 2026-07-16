@@ -22,9 +22,5 @@ export const doctorsService = {
 
   remove(id: number) {
     return ApiService.destroy(ENDPOINT, id)
-  },
-
-  sendWelcomeEmail(id: number) {
-    return ApiService.create<{ message: string }>(`${ENDPOINT}/${id}/send-welcome`, {})
-  },
+  }
 }

@@ -13,7 +13,6 @@ const emit = defineEmits<{
   (e: 'view', item: DoctorDTO): void
   (e: 'edit', item: DoctorDTO): void
   (e: 'delete', item: DoctorDTO): void
-  (e: 'sendWelcomeEmail', item: DoctorDTO): void
   (e: 'toggleActive', item: DoctorDTO): void
 }>()
 
@@ -34,8 +33,7 @@ const emit = defineEmits<{
 
       <tbody class="divide-y divide-slate-100">
         <DoctorTableRow v-for="item in items" :key="item.id" :item="item" @view="emit('view', $event)"
-          @edit="emit('edit', $event)" @delete="emit('delete', $event)"
-          @sendWelcomeEmail="emit('sendWelcomeEmail', $event)" />
+          @edit="emit('edit', $event)" @delete="emit('delete', $event)" />
       </tbody>
 
     </table>

@@ -39,12 +39,6 @@ export const useDoctorsStore = defineStore('doctors', () => {
     items.value = items.value.filter(d => d.id !== id)
   }
 
-  async function sendWelcomeEmail(id: number) {
-    await doctorsService.sendWelcomeEmail(id)
-    const idx = items.value.findIndex(d => d.id === id)
-    if (idx !== -1) items.value[idx] = { ...items.value[idx], email_status: 'sent' as EmailStatus }
-  }
-
   async function toggleActive(id: number) {
     const item = items.value.find(d => d.id === id)
     if (!item) return
@@ -54,5 +48,5 @@ export const useDoctorsStore = defineStore('doctors', () => {
     if (idx !== -1) items.value[idx] = data
   }
 
-  return { items, loading, error, fetchAll, create, update, remove, sendWelcomeEmail, toggleActive }
+  return { items, loading, error, fetchAll, create, update, remove, toggleActive }
 })

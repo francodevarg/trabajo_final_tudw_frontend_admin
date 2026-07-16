@@ -14,7 +14,6 @@ const emit = defineEmits<{
     (e: 'view', item: DoctorDTO): void
     (e: 'edit', item: DoctorDTO): void
     (e: 'delete', item: DoctorDTO): void
-    (e: 'sendWelcomeEmail', item: DoctorDTO): void
 }>()
 
 function extractSpecialtyName(s: unknown): string {
@@ -114,13 +113,6 @@ function extractInsuranceNames(arr: unknown): string[] {
                     class="p-1.5 rounded-lg text-slate-400 hover:text-primary-600 hover:bg-primary-50 transition-colors"
                     title="Editar" @click="emit('edit', item)">
                     <Pencil class="w-4 h-4" />
-                </button>
-
-                <button v-permission="'doctor.change_doctor'"
-                    class="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                    title="Enviar email de bienvenida" :disabled="item.email_status === 'sent'"
-                    @click="emit('sendWelcomeEmail', item)">
-                    <Send class="w-4 h-4" />
                 </button>
 
                 <button v-permission="'doctor.delete_doctor'"

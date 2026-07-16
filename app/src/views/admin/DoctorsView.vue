@@ -9,7 +9,6 @@
   import DoctorDeleteModal from '@/components/doctors/modals/DoctorDeleteModal.vue'
   import DoctorViewModal from '@/components/doctors/modals/DoctorViewModal.vue'
   import DoctorFormModal from '@/components/doctors/modals/DoctorFormModal.vue'
-  import DoctorWelcomeModal from '@/components/doctors/modals/DoctorWelcomeModal.vue'
 
   const store = useDoctorsStore()
   const specialtiesStore = useSpecialtiesStore()
@@ -78,7 +77,6 @@
 
   /* ── Modal state ── */
   const emailError = ref<string | null>(null)
-  const showWelcomeDialog = ref(false)
   const createdDoctorId = ref<number | null>(null)
 
   onMounted(() => {
@@ -138,7 +136,6 @@
       const doctor = await store.create(buildPayload(p))
       createdDoctorId.value = doctor.id
       modalMode.value = null
-      showWelcomeDialog.value = true
     } catch (e: any) {
       const errData = e?.response?.data
       if (errData?.email) {
@@ -187,15 +184,6 @@
     }
   }
 
-  async function handleSendWelcomeEmail(item: DoctorDTO) {
-    try {
-      await store.sendWelcomeEmail(item.id)
-      ui.success('Email de bienvenida enviado')
-    } catch {
-      ui.error('No se pudo enviar el email')
-    }
-  }
-
   async function handleToggleActive(item: DoctorDTO) {
     try {
       await store.toggleActive(item.id)
@@ -205,30 +193,6 @@
     }
   }
 
-  async function handleViewSendWelcome() {
-    if (!selected.value) return
-    await handleSendWelcomeEmail(selected.value)
-    const fresh = store.items.find(d => d.id === selected.value!.id)
-    if (fresh) selected.value = fresh
-  }
-
-  async function handleWelcomeSend() {
-    if (createdDoctorId.value) {
-      try {
-        await store.sendWelcomeEmail(createdDoctorId.value)
-        ui.success('Email de bienvenida enviado')
-      } catch {
-        ui.error('No se pudo enviar el email')
-      }
-    }
-    showWelcomeDialog.value = false
-    createdDoctorId.value = null
-  }
-
-  function handleWelcomeLater() {
-    showWelcomeDialog.value = false
-    createdDoctorId.value = null
-  }
 
 </script>
 
@@ -238,7 +202,7 @@
         v-model:status="statusFilter" v-model:insurance="insuranceFilter" @create="openCreate" />
 
       <DoctorsTable :items="filteredItems" :loading="store.loading" @view="openView" @edit="openEdit"
-        @delete="openDelete" @send-welcome-email="handleSendWelcomeEmail" @toggle-active="handleToggleActive" />
+        @delete="openDelete" @toggle-active="handleToggleActive" />
 
       <DoctorFormModal :open="modalMode === 'create' || modalMode === 'edit'"
         :mode="modalMode === 'create' ? 'create' : 'edit'" :doctor="selected" :loading="modalLoading"
@@ -247,10 +211,7 @@
       <DoctorDeleteModal :open="modalMode === 'delete'" :doctor="selected" :loading="modalLoading" @close="closeModal"
         @confirm="handleDelete" />
 
-      <DoctorWelcomeModal :open="showWelcomeDialog" @send="handleWelcomeSend" @later="handleWelcomeLater"
-        @close="handleWelcomeLater" />
 
-      <DoctorViewModal :open="modalMode === 'view'" :doctor="selected" @close="closeModal"
-        @send-welcome-email="handleViewSendWelcome" />
+      <DoctorViewModal :open="modalMode === 'view'" :doctor="selected" @close="closeModal" />
     </div>
   </template>
