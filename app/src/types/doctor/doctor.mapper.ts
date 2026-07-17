@@ -1,5 +1,6 @@
 import type { Doctor, DoctorAvailability } from './doctor.types'
 import type { DoctorDTO, DoctorCreateDTO, DoctorAvailabilityDTO } from './doctor.dto'
+import type { InsuranceDTO } from '../insurance/insurance.dto'
 
 /* ── Extract helpers (private) ── */
 
@@ -10,13 +11,10 @@ function extractSpecialtyName(s: unknown): string | undefined {
   return undefined
 }
 
-function extractInsuranceNames(arr: unknown): string[] {
-  if (!Array.isArray(arr)) return []
-  return arr.map(i => {
-    if (typeof i === 'string') return i
-    if (typeof i === 'object' && i !== null && 'name' in i) return (i as { name: string }).name
-    return ''
-  }).filter(Boolean)
+function extractInsuranceName(i: unknown): string {
+  if (typeof i === 'string') return i
+  if (typeof i === 'object' && i !== null && 'name' in i) return (i as { name: string }).name
+  return ''
 }
 
 /* ── DTO → Domain ── */
@@ -40,7 +38,11 @@ export function doctorDtoToDomain(dto: DoctorDTO): Doctor {
     specialty: dto.specialty
       ? { id: String(extractSpecialtyName(dto.specialty) ?? ''), name: extractSpecialtyName(dto.specialty) ?? '', slug: '' }
       : null,
-    insurances: extractInsuranceNames(dto.insurances).map(name => ({ id: 0, name })),
+    insurances: (dto.insurances as unknown as InsuranceDTO[]).map(i => ({
+      id: i.id ?? 0,
+      name: extractInsuranceName(i) || String(i.name ?? ''),
+      slug: i.slug ?? '',
+    })),
     licenseNumber: dto.license_number,
     phone: dto.phone,
     description: dto.description,

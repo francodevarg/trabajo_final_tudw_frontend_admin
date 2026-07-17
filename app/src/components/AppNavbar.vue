@@ -15,6 +15,7 @@ const title = computed(() => {
     'admin-medicos': 'Médicos',
     'admin-pacientes': 'Pacientes',
     'admin-especialidades': 'Especialidades',
+    'admin-obras-sociales': 'Obras Sociales',
     'admin-usuarios': 'Usuarios',
     'admin-permisos': 'Roles y Permisos',
     'admin-reportes': 'Reportes',

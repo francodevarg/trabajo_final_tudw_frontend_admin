@@ -2,8 +2,8 @@ import { instance as axios } from '../plugins/axios'
 import type { AxiosResponse } from 'axios'
 
 class ApiService {
-  getAll<T>(url: string): Promise<AxiosResponse<T[]>> {
-    return axios.get<T[]>(url)
+  getAll<T>(url: string, params?: Record<string, string>): Promise<AxiosResponse<T[]>> {
+    return axios.get<T[]>(url, { params })
   }
 
   getOne<T>(url: string, id: number | string): Promise<AxiosResponse<T>> {
