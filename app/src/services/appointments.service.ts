@@ -1,4 +1,4 @@
-import type { AppointmentDTO } from '@/types'
+import type { AppointmentDTO, AppointmentStatus } from '@/types'
 import ApiService from './ApiService'
 
 const ENDPOINT = '/appointments'
@@ -9,5 +9,9 @@ export const appointmentsService = {
     if (dateFrom) params.date_from = dateFrom
     if (dateTo) params.date_to = dateTo
     return ApiService.getAll<AppointmentDTO>(ENDPOINT, params)
+  },
+
+  updateStatus(id: number, status: AppointmentStatus) {
+    return ApiService.update<AppointmentDTO>(ENDPOINT, id, { status })
   },
 }

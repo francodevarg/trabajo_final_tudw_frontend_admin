@@ -1,0 +1,58 @@
+<script setup lang="ts">
+import { computed, watch } from 'vue'
+
+import AgendaToolbar from '@/components/agenda/AgendaToolbar.vue'
+import TodayAgenda from '@/components/agenda/TodayAgenda.vue'
+import WeekAgenda from '@/components/agenda/WeekAgenda.vue'
+import MonthAgenda from '@/components/agenda/MonthAgenda.vue'
+import { useAgendaNavigation } from '@/composables/useAgendaNavigation'
+import { useAppointmentsStore } from '@/stores/appointments.store'
+
+const navigation = useAgendaNavigation()
+const appointments = useAppointmentsStore()
+
+watch(
+  [navigation.viewMode, navigation.selectedDate],
+  () => {
+    const { from, to } = navigation.getRange()
+    appointments.fetchAppointments(from, to)
+  },
+  {
+    immediate: true,
+  }
+)
+
+const currentView = computed(() => {
+  switch (navigation.viewMode.value) {
+    case navigation.AGENDA_VIEW.MONTH:
+      return MonthAgenda
+
+    case navigation.AGENDA_VIEW.DAY:
+      return TodayAgenda
+
+    case navigation.AGENDA_VIEW.WEEK:
+      return WeekAgenda
+
+    default:
+      return TodayAgenda
+  }
+})
+</script>
+
+<template>
+  <div>
+
+    <AgendaToolbar :view-mode="navigation.viewMode.value" :date-range-label="navigation.dateRangeLabel.value"
+      :is-today="navigation.isToday.value" @view-change="navigation.setView" @prev="navigation.goPrev"
+      @next="navigation.goNext" @today="navigation.goToday" />
+
+    <div v-if="appointments.appointments.length === 0" class="py-10 text-center">
+      <p class="text-sm text-slate-400">
+        No hay turnos para el rango seleccionado
+      </p>
+    </div>
+    <Transition name="fade" mode="out-in">
+      <component :is="currentView" :key="navigation.viewMode.value" :appointments="appointments.appointments" />
+    </Transition>
+  </div>
+</template>

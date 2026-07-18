@@ -7,42 +7,44 @@ const routes: RouteRecordRaw[] = [
     path: '/login',
     name: 'login',
     component: () => import('@/views/LoginView.vue'),
-    meta: { public: true },
+    meta: { public: true }
   },
   {
     path: '/',
     component: () => import('@/layouts/AppLayout.vue'),
     meta: { requiresAuth: true },
     children: [
-        {
-          path: 'admin/medicos',
-          name: 'admin-medicos',
-          component: () => import('@/views/admin/DoctorsView.vue'),
-          meta: { rol: 'ADMIN' },
-        },
-        {
-          path: 'admin/especialidades',
-          name: 'admin-especialidades',
-          component: () => import('@/views/admin/SpecialtiesView.vue'),
-          meta: { rol: 'ADMIN' },
-        },
-        {
-          path: 'admin/obras-sociales',
-          name: 'admin-obras-sociales',
-          component: () => import('@/views/admin/InsurancesView.vue'),
-          meta: { rol: 'ADMIN' },
-        },
-    ],
+      {
+        path: 'admin/medicos',
+        name: 'admin-medicos',
+        component: () => import('@/views/admin/DoctorsView.vue')
+      },
+      {
+        path: 'admin/especialidades',
+        name: 'admin-especialidades',
+        component: () => import('@/views/admin/SpecialtiesView.vue')
+      },
+      {
+        path: 'admin/obras-sociales',
+        name: 'admin-obras-sociales',
+        component: () => import('@/views/admin/InsurancesView.vue')
+      },
+      {
+        path: 'admin/turnos',
+        name: 'admin-turnos',
+        component: () => import('@/views/admin/AppointmentsView.vue')
+      }
+    ]
   },
-  { path: '/:pathMatch(.*)*', redirect: '/' },
+  { path: '/:pathMatch(.*)*', redirect: '/' }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes
 })
 
-router.beforeEach((to) => {
+router.beforeEach(to => {
   const token = localStorage.getItem(ACCESS_KEY)
   if (!to.meta.public && !token) {
     return { name: 'login' }
