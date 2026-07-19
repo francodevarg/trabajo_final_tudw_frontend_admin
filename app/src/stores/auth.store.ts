@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { OtpTokens } from '@/types'
+import type { OtpTokens, UserRole } from '@/types'
 import { authService, AuthServiceError } from '@/services/auth.service'
 import { usePermissionsStore } from './permissions.store'
 import { getEmailFromToken, getUserNameFromToken } from '@/helpers/jwt'
@@ -15,7 +15,7 @@ export const useAuthStore = defineStore('auth', () => {
   const userEmail = ref<string | null>(null)
   const userFirstName = ref<string | null>(null)
   const userLastName = ref<string | null>(null)
-  const userGroup = ref<string | null>(null)
+  const userGroup = ref<UserRole | null>(null)
   const loading = ref(false)
   const error = ref('')
 
@@ -126,6 +126,6 @@ export const useAuthStore = defineStore('auth', () => {
     init,
     requestOTP,
     verifyOTP,
-    logout,
+    logout
   }
 })

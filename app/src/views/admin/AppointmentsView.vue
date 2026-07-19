@@ -7,9 +7,12 @@ import WeekAgenda from '@/components/agenda/WeekAgenda.vue'
 import MonthAgenda from '@/components/agenda/MonthAgenda.vue'
 import { useAgendaNavigation } from '@/composables/useAgendaNavigation'
 import { useAppointmentsStore } from '@/stores/appointments.store'
-
+import AgendaFilters from '@/components/agenda/AgendaFilters.vue'
+import { useSpecialtiesStore } from '@/stores/specialties.store'
+import { CalendarDays } from 'lucide-vue-next'
 const navigation = useAgendaNavigation()
 const appointments = useAppointmentsStore()
+const specialties = useSpecialtiesStore()
 
 watch(
   [navigation.viewMode, navigation.selectedDate],
@@ -41,10 +44,29 @@ const currentView = computed(() => {
 
 <template>
   <div>
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
+        <CalendarDays class="w-5 h-5 text-primary-600" />
+      </div>
 
-    <AgendaToolbar :view-mode="navigation.viewMode.value" :date-range-label="navigation.dateRangeLabel.value"
-      :is-today="navigation.isToday.value" @view-change="navigation.setView" @prev="navigation.goPrev"
-      @next="navigation.goNext" @today="navigation.goToday" />
+      <div>
+        <h1 class="text-xl font-semibold text-slate-900">Turnos</h1>
+        <p class="text-xs text-slate-400">
+          {{ appointments.filteredAppointments.length }} turnos
+        </p>
+      </div>
+    </div>
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <AgendaToolbar :view-mode="navigation.viewMode.value" :date-range-label="navigation.dateRangeLabel.value"
+        :is-today="navigation.isToday.value" @view-change="navigation.setView" @prev="navigation.goPrev"
+        @next="navigation.goNext" @today="navigation.goToday" />
+
+      <AgendaFilters
+        :specialties="specialties.items"
+        :specialty-id="appointments.filters.specialtyId"
+        @specialty-change="appointments.filters.specialtyId = $event"
+      />
+    </div>
 
     <div v-if="appointments.appointments.length === 0" class="py-10 text-center">
       <p class="text-sm text-slate-400">
@@ -52,7 +74,7 @@ const currentView = computed(() => {
       </p>
     </div>
     <Transition name="fade" mode="out-in">
-      <component :is="currentView" :key="navigation.viewMode.value" :appointments="appointments.appointments" />
+      <component :is="currentView" :key="navigation.viewMode.value" :appointments="appointments.filteredAppointments" />
     </Transition>
   </div>
 </template>

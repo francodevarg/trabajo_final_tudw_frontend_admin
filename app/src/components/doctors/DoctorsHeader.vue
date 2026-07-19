@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Search, Plus, UserRound, X } from 'lucide-vue-next'
+import { Search, Plus, Stethoscope, X } from 'lucide-vue-next'
 import { useSpecialtiesStore } from '@/stores/specialties.store'
 import { useInsurancesStore } from '@/stores/insurances.store'
 
@@ -43,7 +43,7 @@ function clearFilters() {
       <!-- Left -->
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
-          <UserRound class="w-5 h-5 text-primary-600" />
+          <Stethoscope class="w-5 h-5 text-primary-600" />
         </div>
 
         <div>

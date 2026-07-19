@@ -1,4 +1,4 @@
-import type { JwtPayload } from '@/types'
+import type { JwtPayload, UserRole } from '@/types'
 
 export function decodeJwt(token: string): JwtPayload | null {
   try {
@@ -38,7 +38,7 @@ export function getUserNameFromToken(token: string): { firstName: string; lastNa
   }
 }
 
-export function getRoleFromToken(token: string): string | null {
+export function getRoleFromToken(token: string): UserRole | null {
   const payload = decodeJwt(token)
   return payload?.group ?? null
 }

@@ -24,10 +24,6 @@ const views = [
 
 <template>
   <div class="py-3">
-    <h1 class="text-base font-semibold text-slate-900 mb-3">
-      Turnos
-    </h1>
-
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
 
       <!-- Selector de vista -->

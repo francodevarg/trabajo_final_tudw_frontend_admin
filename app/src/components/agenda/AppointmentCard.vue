@@ -23,20 +23,16 @@ function formatDni(dni: number): string {
           <User class="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
 
           <span class="text-sm font-semibold text-slate-900 truncate">
-            {{ appt.patient_name }}
+            {{ appt.patient.first_name }} {{ appt.patient.last_name }}
           </span>
         </div>
 
         <div class="flex items-center gap-3 text-xs text-slate-400 mt-1">
           <span class="inline-flex items-center gap-1">
             <CreditCard class="w-3 h-3" />
-            {{ formatDni(appt.patientDni) }}
+            {{ formatDni(appt.patient.dni) }}
           </span>
 
-          <span v-if="appt.phone" class="inline-flex items-center gap-1">
-            <Phone class="w-3 h-3" />
-            {{ appt.phone }}
-          </span>
         </div>
       </div>
 
@@ -47,20 +43,12 @@ function formatDni(dni: number): string {
           <Stethoscope class="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
 
           <span class="text-sm text-slate-700 truncate">
-            {{ appt.doctor_name }}
+            {{ appt.doctor.first_name }} {{ appt.doctor.last_name }}
           </span>
         </div>
 
         <div class="text-xs text-slate-400 mt-1 pl-5">
-          {{ appt.specialty_name }}
-        </div>
-      </div>
-
-
-      <!-- Insurance -->
-      <div v-if="appt.insurance_name" class="min-w-0 flex-[1.5] max-md:hidden">
-        <div class="text-sm text-slate-600 truncate">
-          {{ appt.insurance_name }}
+          {{ appt.doctor.specialty.name }}
         </div>
       </div>
 

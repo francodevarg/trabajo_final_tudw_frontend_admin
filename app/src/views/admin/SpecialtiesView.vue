@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { Plus, Stethoscope } from 'lucide-vue-next'
+import { Plus, HeartPulse } from 'lucide-vue-next'
 import { useSpecialtiesStore } from '@/stores/specialties.store'
 import { useUiStore } from '@/stores/ui.store'
 import type { Specialty } from '@/types'
@@ -100,7 +100,7 @@ function getTitle() {
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
-          <Stethoscope class="w-5 h-5 text-primary-600" />
+          <HeartPulse class="w-5 h-5 text-primary-600" />
         </div>
         <div>
           <h1 class="text-xl font-semibold text-slate-900">Especialidades</h1>
