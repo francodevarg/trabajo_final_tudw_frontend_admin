@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Appointment } from '@/types'
-import { User, CreditCard, Phone, Stethoscope } from 'lucide-vue-next'
+import type { AppointmentReadDTO } from '@/types/appointment';
+import { User, CreditCard, Stethoscope } from 'lucide-vue-next'
 
 defineProps<{
-  appt: Appointment
+  appt: AppointmentReadDTO
 }>()
 
 function formatDni(dni: number): string {
@@ -23,14 +23,14 @@ function formatDni(dni: number): string {
           <User class="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
 
           <span class="text-sm font-semibold text-slate-900 truncate">
-            {{ appt.patient.first_name }} {{ appt.patient.last_name }}
+            {{ appt.patient_detail.first_name }} {{ appt.patient_detail.last_name }}
           </span>
         </div>
 
         <div class="flex items-center gap-3 text-xs text-slate-400 mt-1">
           <span class="inline-flex items-center gap-1">
             <CreditCard class="w-3 h-3" />
-            {{ formatDni(appt.patient.dni) }}
+            {{ formatDni(appt.patient_detail.dni) }}
           </span>
 
         </div>
@@ -43,12 +43,12 @@ function formatDni(dni: number): string {
           <Stethoscope class="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
 
           <span class="text-sm text-slate-700 truncate">
-            {{ appt.doctor.first_name }} {{ appt.doctor.last_name }}
+            {{ appt.doctor_detail.first_name }} {{ appt.doctor_detail.last_name }}
           </span>
         </div>
 
         <div class="text-xs text-slate-400 mt-1 pl-5">
-          {{ appt.doctor.specialty.name }}
+          {{ appt.doctor_detail.specialty.name }}
         </div>
       </div>
 

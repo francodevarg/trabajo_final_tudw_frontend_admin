@@ -1,15 +1,16 @@
+import type { AppointmentReadDTO } from './appointment.dto'
 import type { Appointment } from './appointment.types'
 
-export function appointmentDtoToDomain(dto: Appointment): Appointment {
+export function appointmentDtoToDomain(dto: Appointment): AppointmentReadDTO {
   return {
     id: dto.id,
-    patient: {
+    patient_detail: {
       id: dto.patient.id,
       first_name: dto.patient.first_name,
       last_name: dto.patient.last_name,
       dni: dto.patient.dni
     },
-    doctor: {
+    doctor_detail: {
       id: dto.doctor.id,
       first_name: dto.doctor.first_name,
       last_name: dto.doctor.last_name,

@@ -2,8 +2,8 @@ import { computed, reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 import { appointmentsService } from '@/services/appointments.service'
-import { appointmentDtoToDomain } from '@/types/appointment/appointment.mapper'
 import type { Appointment, AppointmentStatus } from '@/types'
+import {appointmentDtoToDomain} from  '@/types'
 import { useUiStore } from './ui.store'
 
 export const useAppointmentsStore = defineStore('appointments', () => {
@@ -15,7 +15,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     specialtyId: null as number | null,
     doctorId: null as number | null,
     status: null as AppointmentStatus | null,
-    search: '',
+    search: ''
   })
 
   async function fetchAppointments(dateFrom: string, dateTo: string): Promise<void> {
@@ -24,11 +24,10 @@ export const useAppointmentsStore = defineStore('appointments', () => {
 
     try {
       const { data } = await appointmentsService.getAll(dateFrom, dateTo)
-
-      appointments.value = data.map(appointmentDtoToDomain)
+      appointments.value = data
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : 'Error al cargar los turnos'
-
+      console.error('Error fetching appointments:', message)
       error.value = message
       useUiStore().error(message)
     } finally {
@@ -36,27 +35,18 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     }
   }
   const filteredAppointments = computed(() => {
-  console.log('Filtro seleccionado:', filters.specialtyId)
+    console.log('Filtro seleccionado:', filters.specialtyId)
 
-  return appointments.value.filter((appointment) => {
+    return appointments.value.filter(appointment => {
+      console.log('Turno:', appointment.id)
 
-    console.log(
-      'Turno:',
-      appointment.id,
-      'Especialidad:',
-      appointment.doctor.specialty
-    )
+      if (filters.specialtyId && appointment.doctor.specialty.id !== filters.specialtyId) {
+        return false
+      }
 
-    if (
-      filters.specialtyId &&
-      appointment.doctor.specialty.id !== filters.specialtyId
-    ) {
-      return false
-    }
-
-    return true
+      return true
+    })
   })
-})
 
   return {
     appointments,
