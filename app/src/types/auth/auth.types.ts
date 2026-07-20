@@ -1,10 +1,12 @@
+export type UserRole = 'ADMIN' | 'DOCTOR'
+
 export interface JwtPayload {
   token_type: string
   exp: number
   iat: number
   jti: string
   user_id: number
-  group: string
+  group: UserRole
   permissions: string[]
   email: string
   first_name: string
