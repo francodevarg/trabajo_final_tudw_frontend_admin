@@ -1,5 +1,32 @@
-# Vue 3 + TypeScript + Vite
+# 🧑‍⚕️ Frontend Administrativo / Profesional
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+> Trabajo Final  
+> Tecnicatura Universitaria en Desarrollo Web  
+> **Desarrollado por:** Franco Narvaez
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## 📋 Descripción
+
+Este proyecto corresponde al frontend administrativo/profesional del **Sistema de Gestión de Turnos para una Clínica**.
+
+La aplicación está orientada a la gestión interna de la clínica, permitiendo a los usuarios autorizados administrar profesionales, especialidades, horarios de atención y turnos asignados.
+
+El sistema consume los servicios expuestos por el backend Django mediante una API, centralizando la lógica de negocio y la persistencia de datos.
+
+---
+
+## ✨ Funcionalidades
+
+- 🔐 Autenticación de usuarios administrativos y profesionales.
+- 👨‍⚕️ Gestión de Doctores.
+- 🏥 Gestión de especialidades médicas.
+- 🗓️ Administración de horarios de atención.
+- 📅 Visualización y gestión de turnos.
+- ✅ Confirmación y actualización del estado de turnos.
+- 👥 Administración de información asociada a pacientes(incoming)
+- 📊 Panel de gestión interno(incoming)
+
+## Overwiev
+
+<p align="center">
+  <img src="./src/assets/overview/DashboardDoctors.png" width="800" alt="Arquitectura del proyecto">
+</p>
