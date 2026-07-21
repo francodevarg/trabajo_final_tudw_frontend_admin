@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.store'
 import { HeartPulse, CircleCheck } from "lucide-vue-next"
 import AuthFormOTP from '../components/auth/AuthFormOTP.vue'
+import { insurancesService } from '@/services/insurances.service.ts'
+import { specialtiesService } from '@/services/specialties.service.ts'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -11,7 +13,7 @@ const auth = useAuthStore()
 onMounted(() => {
   auth.init()
   if (auth.isAuthenticated) {
-    router.replace('/admin')
+    router.replace('/admin/turnos')
   }
 })
 

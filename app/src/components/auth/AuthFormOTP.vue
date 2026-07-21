@@ -60,6 +60,31 @@
           class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
         {{ otpLoading ? 'Verificando...' : 'Verificar' }}
       </button>
+
+      <div class="mt-5 text-center">
+        <p class="text-sm text-slate-500">
+          ¿No recibiste el código?
+        </p>
+
+        <button
+          type="button"
+          @click="resendCode"
+          :disabled="!canResend"
+          class="mt-1 text-sm font-medium text-primary-600 hover:text-primary-700 disabled:text-slate-400 disabled:cursor-not-allowed transition"
+        >
+          <template v-if="resendLoading">
+            Reenviando...
+          </template>
+
+          <template v-else-if="!canResend">
+            Reenviar código en {{ resendCooldown }} s
+          </template>
+
+          <template v-else>
+            Reenviar código
+          </template>
+        </button>
+      </div>
     </div>
   </template>
 </template>
@@ -67,11 +92,13 @@
 
 
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed, onBeforeUnmount } from 'vue'
 import { useAuthStore } from '@/stores/auth.store'
 import { AuthServiceError } from '@/services/auth.service'
 import { ShieldCheck, ArrowLeft } from "lucide-vue-next"
 import { useRouter } from 'vue-router'
+import { insurancesService } from '@/services/insurances.service'
+import { specialtiesService } from '@/services/specialties.service'
 
 const showOtp = ref(false)
 
@@ -87,6 +114,61 @@ const otpRefs = ref<HTMLInputElement[]>([])
 const otpError = ref('')
 const otpLoading = ref(false)
 
+const resendLoading = ref(false)
+const resendCooldown = ref(60)
+let resendTimer: number | null = null
+
+const canResend = computed(() =>
+  resendCooldown.value === 0 && !resendLoading.value
+)
+onBeforeUnmount(() => {
+  if (resendTimer) {
+    clearInterval(resendTimer)
+  }
+})
+
+function startResendCooldown(seconds = 60) {
+  if (resendTimer) {
+    clearInterval(resendTimer)
+  }
+
+  resendCooldown.value = seconds
+
+  resendTimer = window.setInterval(() => {
+    resendCooldown.value--
+
+    if (resendCooldown.value <= 0) {
+      clearInterval(resendTimer!)
+      resendTimer = null
+    }
+  }, 1000)
+}
+
+async function resendCode() {
+  if (!canResend.value) return
+
+  resendLoading.value = true
+
+  try {
+    await auth.requestOTP(email.value.trim())
+
+    otp.value = ['', '', '', '', '', '']
+    otpError.value = ''
+
+    startResendCooldown()
+
+    nextTick(() => otpRefs.value[0]?.focus())
+  } catch (e) {
+    if (e instanceof AuthServiceError) {
+      otpError.value = e.message
+    } else {
+      otpError.value = 'No fue posible reenviar el código.'
+    }
+  } finally {
+    resendLoading.value = false
+  }
+}
+
 
 
 //
@@ -96,6 +178,7 @@ async function submitEmail() {
   try {
     await auth.requestOTP(email.value.trim())
     showOtp.value = true
+    startResendCooldown()
     nextTick(() => otpRefs.value[0]?.focus())
   } catch (e) {
     if (e instanceof AuthServiceError) {
@@ -157,7 +240,9 @@ async function verifyOtp() {
 
   try {
     await auth.verifyOTP(email.value.trim(), code)
-    router.push('/admin')
+    router.push('/admin/turnos')
+    insurancesService.getAll()
+    specialtiesService.getAll()
   } catch (e) {
     if (e instanceof AuthServiceError) {
       otpError.value = e.message
@@ -174,8 +259,16 @@ async function verifyOtp() {
 
 function goBack() {
   showOtp.value = false
+
   otp.value = ['', '', '', '', '', '']
   otpError.value = ''
   error.value = ''
+
+  if (resendTimer) {
+    clearInterval(resendTimer)
+    resendTimer = null
+  }
+
+  resendCooldown.value = 60
 }
 </script>
