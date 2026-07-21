@@ -7,8 +7,15 @@
     <form @submit.prevent="submitEmail" class="mt-8 space-y-4">
       <div>
         <label class="label" for="email">Email</label>
-        <input id="email" v-model="email" type="email" required autocomplete="email" class="input"
-          placeholder="nombre@correo.com" />
+        <input 
+          id="email" 
+          v-model="email" 
+          type="email" 
+          required 
+          autocomplete="email" 
+          class="input"
+          placeholder="nombre@correo.com" 
+        />
       </div>
 
       <p v-if="error" class="text-sm text-error-600 bg-error-50 border border-error-200 rounded-lg px-3 py-2">
@@ -25,8 +32,7 @@
   <!-- Step 2: OTP -->
   <template v-else>
     <div class="animate-fade-in">
-      <button type="button"
-        class="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-6 transition" @click="goBack">
+      <button type="button" class="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 mb-6 transition" @click="goBack">
         <ArrowLeft class="w-4 h-4" />
         Volver
       </button>
@@ -43,21 +49,28 @@
 
       <!-- OTP inputs -->
       <div class="mt-8 flex justify-center gap-2.5">
-        <input v-for="(_, i) in 6" :key="i" :ref="el => { if (el) otpRefs[i] = el as HTMLInputElement }" type="text"
-          inputmode="numeric" maxlength="1" :value="otp[i]"
+        <input 
+          v-for="(_, i) in 6" 
+          :key="i" 
+          :ref="el => { if (el) otpRefs[i] = el as HTMLInputElement }" 
+          type="text"
+          inputmode="numeric" 
+          maxlength="1" 
+          :value="otp[i]"
           class="w-11 h-12 text-center text-lg font-semibold rounded-lg border border-slate-300 bg-white text-slate-800 outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
           :class="{ 'border-error-500 focus:border-error-500 focus:ring-error-500/20': otpError }"
-          @input="handleOtpInput(i, $event)" @keydown="handleOtpKeydown(i, $event)" @paste="handleOtpPaste" />
+          @input="handleOtpInput(i, $event)" 
+          @keydown="handleOtpKeydown(i, $event)" 
+          @paste="handleOtpPaste" 
+        />
       </div>
 
       <p v-if="otpError" class="text-sm text-error-600 text-center mt-4">
         {{ otpError }}
       </p>
 
-      <button class="btn-primary w-full !py-2.5 mt-6" :disabled="otpLoading || otp.some(d => d === '')"
-        @click="verifyOtp">
-        <span v-if="otpLoading"
-          class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
+      <button class="btn-primary w-full !py-2.5 mt-6" :disabled="otpLoading || otp.some(d => d === '')" @click="verifyOtp">
+        <span v-if="otpLoading" class="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
         {{ otpLoading ? 'Verificando...' : 'Verificar' }}
       </button>
 
@@ -68,18 +81,16 @@
 
         <button
           type="button"
-          @click="resendCode"
+          @click="handleResend"
           :disabled="!canResend"
           class="mt-1 text-sm font-medium text-primary-600 hover:text-primary-700 disabled:text-slate-400 disabled:cursor-not-allowed transition"
         >
           <template v-if="resendLoading">
             Reenviando...
           </template>
-
           <template v-else-if="!canResend">
-            Reenviar código en {{ resendCooldown }} s
+            Reenviar código en {{ formattedCooldown }}
           </template>
-
           <template v-else>
             Reenviar código
           </template>
@@ -89,97 +100,64 @@
   </template>
 </template>
 
-
-
 <script setup lang="ts">
-import { ref, nextTick, computed, onBeforeUnmount } from 'vue'
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { ArrowLeft, ShieldCheck } from 'lucide-vue-next'
+
 import { useAuthStore } from '@/stores/auth.store'
 import { AuthServiceError } from '@/services/auth.service'
-import { ShieldCheck, ArrowLeft } from "lucide-vue-next"
-import { useRouter } from 'vue-router'
+import { useOtpAuth } from '@/composables/auth/useOtpAuth' // Ajusta la ruta si es necesario
+
 import { insurancesService } from '@/services/insurances.service'
 import { specialtiesService } from '@/services/specialties.service'
-
-const showOtp = ref(false)
 
 const auth = useAuthStore()
 const router = useRouter()
 
+const showOtp = ref(false)
 const email = ref('')
 const loading = ref(false)
 const error = ref('')
 
-const otp = ref<string[]>(['', '', '', '', '', ''])
-const otpRefs = ref<HTMLInputElement[]>([])
-const otpError = ref('')
-const otpLoading = ref(false)
+// Inicializamos el composable
+const {
+  otp,
+  otpRefs,
+  otpError,
+  otpLoading,
+  resendLoading,
+  resendCooldown,
+  canResend,
+  startCooldown,
+  verify,
+  resend,
+  reset,
+  focusFirst
+} = useOtpAuth(auth.requestOTP, auth.verifyOTP)
 
-const resendLoading = ref(false)
-const resendCooldown = ref(60)
-let resendTimer: number | null = null
-
-const canResend = computed(() =>
-  resendCooldown.value === 0 && !resendLoading.value
-)
-onBeforeUnmount(() => {
-  if (resendTimer) {
-    clearInterval(resendTimer)
-  }
+const formattedCooldown = computed(() => {
+  const minutes = Math.floor(resendCooldown.value / 60)
+  const seconds = resendCooldown.value % 60
+  // padStart(2, '0') asegura que 5 segundos se vea como "05" y no "5"
+  return `${minutes}m ${seconds.toString().padStart(2, '0')}s`
 })
 
-function startResendCooldown(seconds = 60) {
-  if (resendTimer) {
-    clearInterval(resendTimer)
-  }
-
-  resendCooldown.value = seconds
-
-  resendTimer = window.setInterval(() => {
-    resendCooldown.value--
-
-    if (resendCooldown.value <= 0) {
-      clearInterval(resendTimer!)
-      resendTimer = null
-    }
-  }, 1000)
-}
-
-async function resendCode() {
-  if (!canResend.value) return
-
-  resendLoading.value = true
-
-  try {
-    await auth.requestOTP(email.value.trim())
-
-    otp.value = ['', '', '', '', '', '']
-    otpError.value = ''
-
-    startResendCooldown()
-
-    nextTick(() => otpRefs.value[0]?.focus())
-  } catch (e) {
-    if (e instanceof AuthServiceError) {
-      otpError.value = e.message
-    } else {
-      otpError.value = 'No fue posible reenviar el código.'
-    }
-  } finally {
-    resendLoading.value = false
-  }
-}
-
-
-
-//
+// --- Lógica del Step 1 ---
 async function submitEmail() {
   error.value = ''
   loading.value = true
+  reset() // Limpiamos cualquier estado previo de OTP
+
   try {
+    // Usamos el store directamente para el primer envío (para mantener el texto "Iniciando...")
     await auth.requestOTP(email.value.trim())
     showOtp.value = true
-    startResendCooldown()
-    nextTick(() => otpRefs.value[0]?.focus())
+    
+    // Iniciamos el cooldown y enfocamos el primer input
+    startCooldown()
+    focusFirst()
+
   } catch (e) {
     if (e instanceof AuthServiceError) {
       error.value = e.message
@@ -191,84 +169,84 @@ async function submitEmail() {
   }
 }
 
+// --- Lógica del Step 2 (OTP) ---
+async function verifyOtp() {
+  const ok = await verify(email.value.trim())
+
+  if (!ok) return
+
+  // Si la verificación es exitosa, precargamos datos necesarios
+  await Promise.all([
+    insurancesService.getAll(),
+    specialtiesService.getAll()
+  ])
+
+  router.push('/admin/turnos')
+}
+
+// Wrapper para pasar el email correctamente al composable
+async function handleResend() {
+  await resend(email.value.trim())
+}
+
+function goBack() {
+  showOtp.value = false
+  error.value = ''
+  reset() // Limpiamos el estado del composable (timer, inputs, errores)
+}
+
+// --- Manejadores de eventos del DOM para los inputs del OTP ---
 function handleOtpInput(index: number, event: Event) {
-  const input = event.target as HTMLInputElement
-  const val = input.value.replace(/\D/g, '')
+  const target = event.target as HTMLInputElement
+  const value = target.value
 
-  otp.value[index] = val.slice(0, 1)
-  otpError.value = ''
-
-  if (val && index < 5) {
-    nextTick(() => otpRefs.value[index + 1]?.focus())
+  // Solo permitir números
+  if (!/^\d*$/.test(value)) {
+    otp.value[index] = ''
+    return
   }
 
+  // Guardar solo el último carácter ingresado
+  otp.value[index] = value.slice(-1)
+
+  // Mover el foco al siguiente input si se ingresó un valor y no es el último
+  if (value && index < 5) {
+    otpRefs.value[index + 1]?.focus()
+  }
+
+  // ✨ AUTO-VERIFICAR: Si los 6 dígitos están completos, enviar automáticamente
   if (otp.value.every(d => d !== '')) {
     verifyOtp()
   }
 }
 
 function handleOtpKeydown(index: number, event: KeyboardEvent) {
+  // Si se presiona Backspace y el input está vacío, mover el foco al anterior
   if (event.key === 'Backspace' && !otp.value[index] && index > 0) {
-    otp.value[index - 1] = ''
-    nextTick(() => otpRefs.value[index - 1]?.focus())
+    otpRefs.value[index - 1]?.focus()
   }
 }
 
 function handleOtpPaste(event: ClipboardEvent) {
   event.preventDefault()
-  const text = event.clipboardData?.getData('text')?.replace(/\D/g, '') ?? ''
-  if (!text) return
+  const pastedData = event.clipboardData?.getData('text').trim()
+  
+  // Validar que sean exactamente 6 dígitos numéricos
+  if (!pastedData || !/^\d{6}$/.test(pastedData)) return
 
-  for (let i = 0; i < 6; i++) {
-    otp.value[i] = text[i] ?? ''
-  }
+  const digits = pastedData.split('')
+  digits.forEach((digit, i) => {
+    if (i < 6) {
+      otp.value[i] = digit
+    }
+  })
 
-  const focusIdx = Math.min(text.length, 5)
-  nextTick(() => otpRefs.value[focusIdx]?.focus())
+  // Enfocar el último input (o el primero si fallara algo, pero el 5 es el estándar)
+  otpRefs.value[5]?.focus()
 
+  // AUTO-VERIFICAR: Al pegar un código válido de 6 dígitos, enviar automáticamente
   if (otp.value.every(d => d !== '')) {
     verifyOtp()
   }
-}
-
-async function verifyOtp() {
-  const code = otp.value.join('')
-  if (code.length < 6) return
-
-  otpLoading.value = true
-  otpError.value = ''
-
-  try {
-    await auth.verifyOTP(email.value.trim(), code)
-    router.push('/admin/turnos')
-    insurancesService.getAll()
-    specialtiesService.getAll()
-  } catch (e) {
-    if (e instanceof AuthServiceError) {
-      otpError.value = e.message
-    } else {
-      otpError.value = 'Error de red. Intentá de nuevo.'
-    }
-    otp.value = ['', '', '', '', '', '']
-    nextTick(() => otpRefs.value[0]?.focus())
-  } finally {
-    otpLoading.value = false
-  }
-}
-
-
-function goBack() {
-  showOtp.value = false
-
-  otp.value = ['', '', '', '', '', '']
-  otpError.value = ''
-  error.value = ''
-
-  if (resendTimer) {
-    clearInterval(resendTimer)
-    resendTimer = null
-  }
-
-  resendCooldown.value = 60
 }
 </script>
