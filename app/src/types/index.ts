@@ -18,6 +18,8 @@ export type { EmailStatus, DayOfWeek } from './common/common.types'
 export type { Appointment, AppointmentStatus, DoctorBriefDTO, PatientDTO } from './appointment'
 export { appointmentDtoToDomain } from './appointment'
 
+export type { Patient, PaginatedResponse } from './patient'
+
 /* ── DTOs ── */
 export type { DoctorAvailabilityDTO } from './doctor/doctor.dto'
 
