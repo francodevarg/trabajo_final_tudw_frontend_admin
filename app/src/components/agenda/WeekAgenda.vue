@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { ChevronDown } from 'lucide-vue-next'
 import AppointmentCard from './AppointmentCard.vue'
 import { useDateLocale } from '@/composables/useDateLocale'
@@ -26,29 +26,42 @@ const { formatDayLabel } = useDateLocale()
 const weekDays = computed<WeekDay[]>(() => {
   const grouped = props.appointments.reduce<Record<string, Appointment[]>>(
     (acc, appt) => {
-      acc[appt.date] ??= []
-      acc[appt.date].push(appt)
-
+      ;(acc[appt.date] ??= []).push(appt)
       return acc
     },
     {}
   )
 
-  const today = new Date()
-  const todayStr = today.toISOString().split('T')[0]
+  function formatDate(date: Date) {
+    const y = date.getFullYear()
+    const m = String(date.getMonth() + 1).padStart(2, '0')
+    const d = String(date.getDate()).padStart(2, '0')
 
-  const day = today.getDay()
-  const diffToMonday = day === 0 ? -6 : 1 - day
+    return `${y}-${m}-${d}`
+  }
 
-  const monday = new Date(today)
-  monday.setDate(today.getDate() + diffToMonday)
+  const todayStr = formatDate(new Date())
 
+  // Fecha base: primer turno o hoy
+  const baseDate = props.appointments.length
+    ? new Date(`${props.appointments
+        .map(a => a.date)
+        .sort()[0]}T12:00:00`)
+    : new Date()
+
+  // Lunes de esa semana
+  const monday = new Date(baseDate)
+
+  const dayOfWeek = monday.getDay()
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
+
+  monday.setDate(monday.getDate() + diff)
 
   return Array.from({ length: 7 }, (_, index) => {
     const date = new Date(monday)
     date.setDate(monday.getDate() + index)
 
-    const dateStr = date.toISOString().split('T')[0]
+    const dateStr = formatDate(date)
 
     return {
       date: dateStr,
@@ -59,14 +72,30 @@ const weekDays = computed<WeekDay[]>(() => {
 })
 
 
-const expandedDays = ref<Set<string>>(
-  new Set(
-    weekDays.value
-      .filter(day => day.isToday && day.items.length)
-      .map(day => day.date)
-  )
-)
+const expandedDays = ref(new Set<string>())
 
+watch(
+  weekDays,
+  days => {
+    const validExpanded = [...expandedDays.value].filter(date =>
+      days.some(day => day.date === date && day.items.length)
+    )
+
+    if (validExpanded.length) {
+      expandedDays.value = new Set(validExpanded)
+      return
+    }
+
+    const firstWithAppointments = days.find(day => day.items.length > 0)
+
+    expandedDays.value = new Set(
+      firstWithAppointments ? [firstWithAppointments.date] : []
+    )
+  },
+  {
+    immediate: true,
+  }
+)
 
 function toggleDay(date: string) {
   const day = weekDays.value.find(item => item.date === date)

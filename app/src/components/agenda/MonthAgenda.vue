@@ -1,76 +1,111 @@
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue'
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import CalendarDay from './CalendarDay.vue'
 import DayDetailModal from './DayDetailModal.vue'
 import { useCalendarMonth } from '@/composables/useCalendarMonth'
+import { useDateLocale } from '@/composables/useDateLocale'
 import type { Appointment } from '@/types'
-import { computed, ref } from 'vue';
+import { parseISO, startOfMonth, endOfMonth } from 'date-fns'
 
 const props = defineProps<{
-    appointments: Appointment[]
+  appointments: Appointment[]
+  selectedDate: string
 }>()
 
+const emit = defineEmits<{
+  (e: 'prev'): void
+  (e: 'next'): void
+}>()
 
-const weekHeaders = [
-    'Lun',
-    'Mar',
-    'Mié',
-    'Jue',
-    'Vie',
-    'Sáb',
-    'Dom',
-]
+const { formatDate } = useDateLocale()
 
-const selectedAppointments = computed(() => {
-    if (!selectedDate.value) {
-        return []
-    }
+const weekHeaders = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
 
-    return props.appointments.filter(
-        appointment => appointment.date === selectedDate.value
-    )
-})
-
-const monthDays = useCalendarMonth(
-    () => props.appointments
-)
 const selectedDate = ref<string | null>(null)
 const showModal = ref(false)
 
-function openDay(date: string) {
-    selectedDate.value = date
-    showModal.value = true
-}
+const currentMonth = computed(() => parseISO(props.selectedDate))
 
+const monthDays = useCalendarMonth(
+  () => currentMonth.value,
+  () => props.appointments,
+)
+
+const selectedAppointments = computed(() => {
+  if (!selectedDate.value) return []
+  return props.appointments.filter(a => a.date === selectedDate.value)
+})
+
+const monthLabel = computed(() =>
+  formatDate(props.selectedDate, 'MMMM yyyy'),
+)
+
+watch(() => props.selectedDate, () => {
+  selectedDate.value = null
+  showModal.value = false
+})
+
+function openDay(date: string) {
+  selectedDate.value = date
+  showModal.value = true
+}
 </script>
 
 <template>
-    <div>
+  <div>
+    <div class="bg-white rounded-xl shadow-[0_1px_3px_0_rgb(0_0_0_/_0.04)]">
 
-        <div class="bg-white rounded-xl shadow-[0_1px_3px_0_rgb(0_0_0_/_0.04)]">
+      <!-- Header con navegación -->
+      <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+        <button
+          class="p-1.5 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+          @click="emit('prev')"
+        >
+          <ChevronLeft class="w-4 h-4" />
+        </button>
+        <span class="text-sm font-semibold text-slate-800 capitalize">{{ monthLabel }}</span>
+        <button
+          class="p-1.5 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+          @click="emit('next')"
+        >
+          <ChevronRight class="w-4 h-4" />
+        </button>
+      </div>
 
-            <div class="grid grid-cols-7 border-b border-slate-100">
-
-                <div v-for="day in weekHeaders" :key="day"
-                    class="px-1.5 py-1.5 text-center text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                    {{ day }}
-                </div>
-
-            </div>
-
-
-            <div class="grid grid-cols-7 p-1 gap-px">
-
-                <CalendarDay v-for="cell in monthDays" :key="cell.date" :date="cell.date" :day-number="cell.dayNumber"
-                    :items="cell.items" :count="cell.count" :is-today="cell.isToday"
-                    :is-current-month="cell.isCurrentMonth" @select="openDay" />
-
-            </div>
-
+      <!-- Días de la semana -->
+      <div class="grid grid-cols-7 border-b border-slate-100">
+        <div
+          v-for="day in weekHeaders"
+          :key="day"
+          class="px-1.5 py-1.5 text-center text-[11px] font-semibold text-slate-400 uppercase tracking-wider"
+        >
+          {{ day }}
         </div>
+      </div>
 
-
-        <DayDetailModal v-if="selectedDate" :date="selectedDate" :appointments="selectedAppointments"
-            v-model:open="showModal" @close="showModal = false" />
-
+      <!-- Grilla del calendario -->
+      <div class="grid grid-cols-7 p-1 gap-px">
+        <CalendarDay
+          v-for="cell in monthDays"
+          :key="cell.date"
+          :date="cell.date"
+          :day-number="cell.dayNumber"
+          :items="cell.items"
+          :count="cell.count"
+          :is-today="cell.isToday"
+          :is-current-month="cell.isCurrentMonth"
+          @select="openDay"
+        />
+      </div>
     </div>
+
+    <DayDetailModal
+      v-if="selectedDate"
+      :date="selectedDate"
+      :appointments="selectedAppointments"
+      v-model:open="showModal"
+      @close="showModal = false"
+    />
+  </div>
 </template>

@@ -1,29 +1,33 @@
-import { computed } from 'vue'
 import type { Appointment } from '@/types'
+import { computed } from 'vue'
 import { groupByDate } from './useGroupedByDate'
 
-export function useCalendarMonth(appointments: () => Appointment[]) {
+function formatDateLocal(date: Date): string {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+export function useCalendarMonth(
+  currentDate: () => Date,
+  appointments: () => Appointment[],
+) {
   return computed(() => {
     const grouped = groupByDate(appointments())
+    const selected = currentDate()
 
-    const today = new Date()
-    const todayStr = today.toISOString().split('T')[0]
+    const year = selected.getFullYear()
+    const month = selected.getMonth()
 
-    const year = today.getFullYear()
-    const month = today.getMonth()
+    const todayStr = formatDateLocal(new Date())
 
     const firstDay = new Date(year, month, 1)
-    const lastDay = new Date(year, month + 1, 0)
-
     const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1
 
-    const totalDays = 42
-
-    return Array.from({ length: totalDays }, (_, index) => {
+    return Array.from({ length: 42 }, (_, index) => {
       const date = new Date(year, month, index - startDay + 1)
-
-      const dateStr = date.toISOString().split('T')[0]
-
+      const dateStr = formatDateLocal(date)
       const items = grouped[dateStr] ?? []
 
       return {
@@ -32,7 +36,7 @@ export function useCalendarMonth(appointments: () => Appointment[]) {
         items,
         count: items.length,
         isToday: dateStr === todayStr,
-        isCurrentMonth: date.getMonth() === month
+        isCurrentMonth: date.getMonth() === month,
       }
     })
   })

@@ -73,8 +73,16 @@ const currentView = computed(() => {
         No hay turnos para el rango seleccionado
       </p>
     </div>
-    <Transition name="fade" mode="out-in">
-      <component :is="currentView" :key="navigation.viewMode.value" :appointments="appointments.filteredAppointments" />
+    <Transition name="fade" mode="out-in" >
+      <component
+        v-if="appointments.appointments.length !==0"
+        :is="currentView"
+        :key="navigation.viewMode.value"
+        :appointments="appointments.filteredAppointments"
+        :selected-date="navigation.selectedDate.value"
+        @prev="navigation.goPrev"
+        @next="navigation.goNext"
+      />
     </Transition>
   </div>
 </template>

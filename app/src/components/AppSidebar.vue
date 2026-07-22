@@ -26,7 +26,6 @@ const menuItems = [
   { name: 'Pacientes', to: '/admin/pacientes', icon: Users },
   { name: 'Especialidades', to: '/admin/especialidades', icon: HeartPulse },
   { name: 'Obras Sociales', to: '/admin/obras-sociales', icon: ShieldPlus },
-  { name: 'Reportes', to: '/admin/reportes', icon: ChartColumn },
 ]
 
 const medicoItems = [
