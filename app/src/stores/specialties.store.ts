@@ -14,7 +14,7 @@ export const useSpecialtiesStore = defineStore('specialties', () => {
     loading.value = true
     error.value = ''
     try {
-      const { data } = await specialtiesService.getAll()
+      const data = await specialtiesService.getAll()
       items.value = data
       loaded.value = true
     } catch (e: any) {
@@ -30,13 +30,13 @@ export const useSpecialtiesStore = defineStore('specialties', () => {
   }
 
   async function create(name: string) {
-    const { data } = await specialtiesService.create(name)
+    const data = await specialtiesService.create(name)
     items.value.push(data)
     return data
   }
 
   async function update(id: string, name: string) {
-    const { data } = await specialtiesService.update(id, name)
+    const data = await specialtiesService.update(id, name)
     const idx = items.value.findIndex(s => s.id === id)
     if (idx !== -1) items.value[idx] = data
     return data

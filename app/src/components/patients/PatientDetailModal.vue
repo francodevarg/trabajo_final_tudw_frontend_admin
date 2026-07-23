@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { X, User, Calendar, Stethoscope } from 'lucide-vue-next'
+import { X, User } from 'lucide-vue-next'
 import type { Patient } from '@/types'
 import PatientAvatar from './PatientAvatar.vue'
+import { dateToAge } from '@/helpers/dateFormat.ts';
 
 defineProps<{
   open: boolean
@@ -12,36 +13,11 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-function formatDate(dateStr: string | null): string {
-  if (!dateStr) return '—'
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })
-}
-
 function sexLabel(sex: string): string {
   const map: Record<string, string> = { M: 'Masculino', F: 'Femenino' }
   return map[sex] || sex
 }
 
-function statusLabel(status: string): string {
-  const map: Record<string, string> = {
-    scheduled: 'Programado',
-    completed: 'Completado',
-    cancelled: 'Cancelado',
-    no_show: 'No asistió',
-  }
-  return map[status] || status
-}
-
-function statusBadgeClass(status: string): string {
-  const map: Record<string, string> = {
-    scheduled: 'bg-primary-50 text-primary-700',
-    completed: 'bg-success-50 text-success-700',
-    cancelled: 'bg-slate-100 text-slate-500',
-    no_show: 'bg-warning-50 text-warning-700',
-  }
-  return map[status] || 'bg-slate-100 text-slate-500'
-}
 </script>
 
 <template>
@@ -66,10 +42,10 @@ function statusBadgeClass(status: string): string {
                 size="lg"
               />
               <div>
-                <h2 class="text-lg font-semibold text-slate-900">{{ patient.full_name }}</h2>
+                <h2 class="text-lg font-semibold text-slate-900">{{ patient.first_name + ' ' + patient.last_name }}</h2>
                 <div class="flex items-center gap-3 mt-0.5">
                   <code class="text-xs text-slate-500 bg-slate-100 rounded-md px-2 py-0.5">DNI {{ patient.dni }}</code>
-                  <span class="text-xs text-slate-400">{{ patient.age }} años</span>
+                  <span class="text-xs text-slate-400">{{ dateToAge(patient.date_of_birth) }} años</span>
                   <span class="text-xs text-slate-400">·</span>
                   <span class="text-xs text-slate-400">{{ sexLabel(patient.sex) }}</span>
                 </div>
@@ -108,7 +84,7 @@ function statusBadgeClass(status: string): string {
                 </div>
                 <div>
                   <dt class="text-[11px] text-slate-400 uppercase tracking-wider">Edad</dt>
-                  <dd class="text-sm font-medium text-slate-700">{{ patient.age }} años</dd>
+                  <dd class="text-sm font-medium text-slate-700">{{ dateToAge(patient.date_of_birth) }} años</dd>
                 </div>
                 <div>
                   <dt class="text-[11px] text-slate-400 uppercase tracking-wider">Sexo</dt>
@@ -117,7 +93,7 @@ function statusBadgeClass(status: string): string {
               </dl>
             </div>
 
-            <!-- Last Appointment -->
+            <!-- Last Appointment
             <div class="rounded-xl border border-slate-200 p-5">
               <h3 class="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
                 <Calendar class="w-4 h-4 text-slate-400" />
@@ -135,7 +111,7 @@ function statusBadgeClass(status: string): string {
                 <Stethoscope class="w-8 h-8 text-slate-300 mb-2" />
                 <p class="text-xs text-slate-400">Sin turnos registrados</p>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

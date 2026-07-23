@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import type { DoctorDTO } from '@/types'
+import type { Doctor } from '@/types'
 import DoctorsTableEmpty from './DoctorsTableEmpty.vue'
 import DoctorTableRow from './DoctorsTableRow.vue'
 import DoctorTableHeader from './DoctorsTableHeader.vue'
 
 defineProps<{
-  items: DoctorDTO[]
+  items: Doctor[]
   loading: boolean
 }>()
 
 const emit = defineEmits<{
-  (e: 'view', item: DoctorDTO): void
-  (e: 'edit', item: DoctorDTO): void
-  (e: 'delete', item: DoctorDTO): void
-  (e: 'toggleActive', item: DoctorDTO): void
+  (e: 'view', item: Doctor): void
+  (e: 'edit', item: Doctor): void
+  (e: 'delete', item: Doctor): void
+  (e: 'toggleActive', item: Doctor): void
 }>()
 
 </script>

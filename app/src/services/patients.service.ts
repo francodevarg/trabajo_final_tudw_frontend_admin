@@ -1,17 +1,12 @@
-import { instance as axios } from '@/plugins/axios'
-import type { Patient, PaginatedResponse } from '@/types'
+import type { Patient } from '@/types'
+import ApiService from './ApiService'
 
 const ENDPOINT = '/patients'
 
-export interface PatientListParams {
-  search?: string
-  ordering?: string
-  page?: number
-  page_size?: number
-}
 
 export const patientsService = {
-  getAll(params?: PatientListParams) {
-    return axios.get<PaginatedResponse<Patient>>(ENDPOINT, { params })
+  getAll() {
+    return ApiService.getAll<Patient>(ENDPOINT)
   },
 }
+

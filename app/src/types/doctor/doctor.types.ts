@@ -1,27 +1,24 @@
-import type { EmailStatus, DayOfWeek } from '../common/common.types'
+import type { DayOfWeek } from '../common/common.types'
 import type { Specialty } from '../specialty/specialty.types'
 import type { Insurance } from '../insurance/insurance.types'
 
 export interface DoctorAvailability {
-  id?: number
-  dayOfWeek: DayOfWeek
-  startTime: string
-  endTime: string
+  day_of_week: DayOfWeek
+  start_time: string
+  end_time: string
 }
 
 export interface Doctor {
   id: number
-  firstName: string
-  lastName: string
-  fullName: string
+  first_name: string
+  last_name: string
   email: string
-  specialty: Specialty | null
+  specialty: Specialty
   insurances: Insurance[]
-  licenseNumber: string
+  license_number: string
   phone: string
   description: string
-  consultationFee: string
+  consultation_fee: string
   availabilities: DoctorAvailability[]
-  isActive: boolean
-  emailStatus: EmailStatus
+  is_active: boolean
 }

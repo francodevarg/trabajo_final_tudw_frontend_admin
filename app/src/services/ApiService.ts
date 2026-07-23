@@ -1,30 +1,45 @@
-import { instance as axios } from '../plugins/axios'
-import type { AxiosResponse } from 'axios'
+import { instance as axios } from "../plugins/axios";
 
 class ApiService {
-  getAll<T>(url: string, params?: Record<string, string>): Promise<AxiosResponse<T[]>> {
-    return axios.get<T[]>(url, { params })
+  async getAll<Response>(
+    url: string,
+    params?: Record<string, string>
+  ): Promise<Response[]> {
+    const { data } = await axios.get<Response[]>(url, { params });
+    return data;
   }
 
-  getOne<T>(url: string, id: number | string): Promise<AxiosResponse<T>> {
-    return axios.get<T>(`${url}/${id}`)
+  async getOne<Response>(
+    url: string,
+    id: number | string
+  ): Promise<Response> {
+    const { data } = await axios.get<Response>(`${url}/${id}`);
+    return data;
   }
 
-  create<T>(url: string, data: Partial<T>): Promise<AxiosResponse<T>> {
-    return axios.post<T>(url, data)
+  async create<Response, Request>(
+    url: string,
+    payload: Request
+  ): Promise<Response> {
+    const { data } = await axios.post<Response>(url, payload);
+    return data;
   }
 
-  update<T>(
+  async update<Response, Request>(
     url: string,
     id: number | string,
-    data: Partial<T>
-  ): Promise<AxiosResponse<T>> {
-    return axios.put<T>(`${url}/${id}`, data)
+    payload: Request
+  ): Promise<Response> {
+    const { data } = await axios.put<Response>(`${url}/${id}`, payload);
+    return data;
   }
 
-  destroy(url: string, id: number | string): Promise<AxiosResponse<void>> {
-    return axios.delete<void>(`${url}/${id}`)
+  async destroy(
+    url: string,
+    id: number | string
+  ): Promise<void> {
+    await axios.delete(`${url}/${id}`);
   }
 }
 
-export default new ApiService()
+export default new ApiService();

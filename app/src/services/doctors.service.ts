@@ -1,26 +1,30 @@
-import type { DoctorDTO, DoctorCreateDTO } from '@/types'
+import type { Doctor, CreateDoctorRequest, UpdateDoctorRequest } from '@/types'
 import ApiService from './ApiService'
 
 const ENDPOINT = '/doctors'
 
 export const doctorsService = {
-  getAll() {
-    return ApiService.getAll<DoctorDTO>(ENDPOINT)
+  getAll(): Promise<Doctor[]> {
+    return ApiService.getAll<Doctor>(ENDPOINT);
   },
 
-  getOne(id: number) {
-    return ApiService.getOne<DoctorDTO>(ENDPOINT, id)
+  getOne(id: number): Promise<Doctor> {
+    return ApiService.getOne<Doctor>(ENDPOINT, id);
   },
 
-  create(data: DoctorCreateDTO) {
-    return ApiService.create<DoctorDTO>(ENDPOINT, data)
+  create(data: CreateDoctorRequest): Promise<Doctor> {
+    return ApiService.create<Doctor, CreateDoctorRequest>(ENDPOINT, data);
   },
 
-  update(id: number, data: DoctorCreateDTO) {
-    return ApiService.update<DoctorDTO>(ENDPOINT, id, data)
+  update(id: number, data: UpdateDoctorRequest): Promise<Doctor> {
+    return ApiService.update<Doctor, UpdateDoctorRequest>(
+      ENDPOINT,
+      id,
+      data
+    );
   },
 
-  remove(id: number) {
-    return ApiService.destroy(ENDPOINT, id)
-  }
-}
+  remove(id: number): Promise<void> {
+    return ApiService.destroy(ENDPOINT, id);
+  },
+};

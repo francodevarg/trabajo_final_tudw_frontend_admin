@@ -14,7 +14,7 @@ export const useInsurancesStore = defineStore('insurances', () => {
     loading.value = true
     error.value = ''
     try {
-      const { data } = await insurancesService.getAll()
+      const data = await insurancesService.getAll()
       items.value = data
       loaded.value = true
     } catch (e: any) {
@@ -30,13 +30,13 @@ export const useInsurancesStore = defineStore('insurances', () => {
   }
 
   async function create(name: string) {
-    const { data } = await insurancesService.create(name)
+    const data = await insurancesService.create(name)
     items.value.push(data)
     return data
   }
 
   async function update(id: number, name: string) {
-    const { data } = await insurancesService.update(id, name)
+    const data = await insurancesService.update(id, name)
     const idx = items.value.findIndex(s => s.id === id)
     if (idx !== -1) items.value[idx] = data
     return data

@@ -1,52 +1,83 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { DoctorDTO, DoctorCreateDTO, EmailStatus } from '@/types'
+
+import type { Doctor, CreateDoctorRequest } from '@/types'
 import { doctorsService } from '@/services/doctors.service'
 
 export const useDoctorsStore = defineStore('doctors', () => {
-  const items = ref<DoctorDTO[]>([])
+  const items = ref<Doctor[]>([])
   const loading = ref(false)
-  const error = ref('')
+  const error = ref<string | null>(null)
+
+  function setItem(item: Doctor) {
+    const index = items.value.findIndex(d => d.id === item.id)
+
+    if (index === -1) {
+      items.value.push(item)
+    } else {
+      items.value[index] = item
+    }
+  }
+
+  function removeItem(id: number) {
+    items.value = items.value.filter(d => d.id !== id)
+  }
 
   async function fetchAll() {
     loading.value = true
-    error.value = ''
+    error.value = null
+
     try {
-      const { data } = await doctorsService.getAll()
+      const data = await doctorsService.getAll()
       items.value = data
-    } catch (e: any) {
-      error.value = e.message || 'Error al cargar médicos'
+    } catch (err: any) {
+      error.value = err?.message ?? 'Error al cargar los médicos'
+      throw err
     } finally {
       loading.value = false
     }
   }
 
-  async function create(dto: DoctorCreateDTO) {
-    const { data } = await doctorsService.create(dto)
-    items.value.push(data)
+  async function create(payload: CreateDoctorRequest) {
+    const data = await doctorsService.create(payload)
+    setItem(data)
     return data
   }
 
-  async function update(id: number, dto: DoctorCreateDTO) {
-    const { data } = await doctorsService.update(id, dto)
-    const idx = items.value.findIndex(d => d.id === id)
-    if (idx !== -1) items.value[idx] = data
+  async function update(id: number, payload: CreateDoctorRequest) {
+    const data = await doctorsService.update(id, payload)
+    setItem(data)
     return data
   }
 
   async function remove(id: number) {
     await doctorsService.remove(id)
-    items.value = items.value.filter(d => d.id !== id)
+    removeItem(id)
   }
 
-  async function toggleActive(id: number) {
-    const item = items.value.find(d => d.id === id)
-    if (!item) return
-    const dto: DoctorCreateDTO = { ...item, is_active: !item.is_active }
-    const { data } = await doctorsService.update(id, dto)
-    const idx = items.value.findIndex(d => d.id === id)
-    if (idx !== -1) items.value[idx] = data
+  function getById(id: number) {
+    return items.value.find(d => d.id === id) ?? null
   }
 
-  return { items, loading, error, fetchAll, create, update, remove, toggleActive }
+  function clear() {
+    items.value = []
+    error.value = null
+  }
+
+  return {
+    // State
+    items,
+    loading,
+    error,
+
+    // Actions
+    fetchAll,
+    create,
+    update,
+    remove,
+
+    // Helpers
+    getById,
+    clear,
+  }
 })

@@ -13,29 +13,23 @@ export type {
   PermissionValue
 } from './permissions/permissions.types'
 
-export type { EmailStatus, DayOfWeek } from './common/common.types'
+export type { DayOfWeek } from './common/common.types'
 
 export type { Appointment, AppointmentStatus, DoctorBriefDTO, PatientDTO } from './appointment'
 export { appointmentDtoToDomain } from './appointment'
 
-export type { Patient, PaginatedResponse } from './patient'
+export type { Patient } from './patient'
 
 /* ── DTOs ── */
-export type { DoctorAvailabilityDTO } from './doctor/doctor.dto'
 
 export type { SpecialtyDTO } from './specialty/specialty.dto'
 
 export type { InsuranceDTO } from './insurance/insurance.dto'
+export type { CreateDoctorRequest, UpdateDoctorRequest } from './doctor/doctor.dto'
+
 
 export type { OtpRequest, OtpResponse, OtpVerify, AuthError } from './auth/auth.dto'
 
-/* ── Mappers ── */
-export {
-  doctorDtoToDomain,
-  doctorDomainToCreateDto,
-  dtoAvailToDomain,
-  domainAvailToDto
-} from './doctor/doctor.mapper'
 
 export { specialtyDtoToDomain, specialtyDomainToDto } from './specialty/specialty.mapper'
 

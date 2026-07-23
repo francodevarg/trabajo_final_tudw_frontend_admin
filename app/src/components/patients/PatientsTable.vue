@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { Inbox, Eye, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { Inbox, Eye } from 'lucide-vue-next'
 import type { Patient } from '@/types'
 import PatientAvatar from './PatientAvatar.vue'
-
+import { dateToAge } from '@/helpers/dateFormat.ts';
 const props = defineProps<{
   items: Patient[]
   loading: boolean
-  count: number
-  page: number
-  pageSize: number
 }>()
 
 const emit = defineEmits<{
@@ -17,13 +13,6 @@ const emit = defineEmits<{
   (e: 'page-change', page: number): void
 }>()
 
-const totalPages = computed(() => Math.max(1, Math.ceil(props.count / props.pageSize)))
-
-function formatDate(dateStr: string | null): string {
-  if (!dateStr) return '—'
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })
-}
 
 function sexLabel(sex: string): string {
   const map: Record<string, string> = { M: 'Masculino', F: 'Femenino' }
@@ -36,16 +25,6 @@ function sexBadgeClass(sex: string): string {
     F: 'bg-rose-50 text-rose-700',
   }
   return map[sex] || 'bg-slate-100 text-slate-600'
-}
-
-function appointmentStatusLabel(status: string): string {
-  const map: Record<string, string> = {
-    scheduled: 'Programado',
-    completed: 'Completado',
-    cancelled: 'Cancelado',
-    no_show: 'No asistió',
-  }
-  return map[status] || status
 }
 </script>
 
@@ -71,10 +50,10 @@ function appointmentStatusLabel(status: string): string {
         <thead>
           <tr class="border-b border-slate-100 bg-slate-50/80">
             <th class="text-left px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider">Paciente</th>
+            <th class="text-left px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider hidden xl:table-cell">Email</th>
             <th class="text-left px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider hidden md:table-cell">DNI</th>
             <th class="text-left px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider hidden lg:table-cell">Edad</th>
             <th class="text-left px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider hidden lg:table-cell">Sexo</th>
-            <th class="text-left px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider hidden xl:table-cell">Último Turno</th>
             <th class="text-right px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider w-20">Acciones</th>
           </tr>
         </thead>
@@ -89,33 +68,25 @@ function appointmentStatusLabel(status: string): string {
               <div class="flex items-center gap-3">
                 <PatientAvatar :first-name="item.first_name" :last-name="item.last_name" />
                 <div class="min-w-0">
-                  <p class="font-medium text-slate-800 text-sm truncate">{{ item.full_name }}</p>
-                  <p class="text-xs text-slate-400 truncate md:hidden">{{ item.dni }}</p>
+                  <p class="font-medium text-slate-800 text-sm truncate">{{ item.first_name +' ' + item.last_name }}</p>
                 </div>
               </div>
             </td>
-
+            <td class="px-5 py-3.5 hidden md:table-cell">
+              {{ item.email }}
+            </td>
             <td class="px-5 py-3.5 hidden md:table-cell">
               <code class="text-xs text-slate-500 bg-slate-100 rounded-md px-2 py-0.5">{{ item.dni }}</code>
             </td>
 
             <td class="px-5 py-3.5 hidden lg:table-cell">
-              <span class="text-sm text-slate-600">{{ item.age }} años</span>
+              <span class="text-sm text-slate-600">{{ dateToAge(item.date_of_birth) }} años</span>
             </td>
 
             <td class="px-5 py-3.5 hidden lg:table-cell">
               <span :class="['inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium', sexBadgeClass(item.sex)]">
                 {{ sexLabel(item.sex) }}
               </span>
-            </td>
-
-            <td class="px-5 py-3.5 hidden xl:table-cell">
-              <div v-if="item.last_appointment" class="flex items-center gap-2">
-                <span class="text-xs text-slate-600">{{ formatDate(item.last_appointment.date) }}</span>
-                <span class="text-[10px] text-slate-400">·</span>
-                <span class="text-[11px] text-slate-500">{{ appointmentStatusLabel(item.last_appointment.status) }}</span>
-              </div>
-              <span v-else class="text-xs text-slate-400">—</span>
             </td>
 
             <td class="px-5 py-3.5 text-right">
@@ -132,38 +103,5 @@ function appointmentStatusLabel(status: string): string {
       </table>
     </div>
 
-    <!-- Pagination -->
-    <div v-if="totalPages > 1" class="flex items-center justify-between mt-4">
-      <p class="text-xs text-slate-400">
-        Página {{ page }} de {{ totalPages }}
-      </p>
-      <div class="flex items-center gap-1">
-        <button
-          class="btn-ghost btn-sm"
-          :disabled="page <= 1"
-          @click="emit('page-change', page - 1)"
-        >
-          <ChevronLeft class="w-4 h-4" />
-        </button>
-        <button
-          v-for="p in totalPages"
-          :key="p"
-          class="w-8 h-8 rounded-lg text-xs font-medium transition-colors"
-          :class="p === page
-            ? 'bg-primary-600 text-white shadow-sm'
-            : 'text-slate-600 hover:bg-slate-100'"
-          @click="emit('page-change', p)"
-        >
-          {{ p }}
-        </button>
-        <button
-          class="btn-ghost btn-sm"
-          :disabled="page >= totalPages"
-          @click="emit('page-change', page + 1)"
-        >
-          <ChevronRight class="w-4 h-4" />
-        </button>
-      </div>
-    </div>
   </template>
 </template>

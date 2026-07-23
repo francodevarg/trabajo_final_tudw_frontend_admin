@@ -9,11 +9,11 @@ export const insurancesService = {
   },
 
   create(name: string) {
-    return ApiService.create<Insurance>(ENDPOINT, { name: name.trim() })
+    return ApiService.create<Insurance,Partial<Insurance>>(ENDPOINT, { name: name.trim() })
   },
 
   update(id: number, name: string) {
-    return ApiService.update<Insurance>(ENDPOINT, id, { name: name.trim() })
+    return ApiService.update<Insurance,Partial<Insurance>>(ENDPOINT, id,  { name: name.trim() })
   },
 
   remove(id: number) {

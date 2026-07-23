@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DoctorDTO } from '@/types'
+import type { Doctor } from '@/types'
 import { Pencil, Trash2, Send, Eye } from 'lucide-vue-next'
 
 import DoctorAvatar from '../DoctorAvatar.vue'
@@ -7,13 +7,13 @@ import InsuranceBadge from '../InsuranceBadge.vue'
 import AvailabilitySummary from '../AvailabilitySummary.vue'
 
 defineProps<{
-    item: DoctorDTO
+    item: Doctor
 }>()
 
 const emit = defineEmits<{
-    (e: 'view', item: DoctorDTO): void
-    (e: 'edit', item: DoctorDTO): void
-    (e: 'delete', item: DoctorDTO): void
+    (e: 'view', item: Doctor): void
+    (e: 'edit', item: Doctor): void
+    (e: 'delete', item: Doctor): void
 }>()
 
 function extractSpecialtyName(s: unknown): string {
@@ -72,7 +72,7 @@ function extractInsuranceNames(arr: unknown): string[] {
         <td class="px-4 py-3 hidden md:table-cell">
             <span
                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-primary-50 text-primary-700">
-                {{ extractSpecialtyName(item.specialty) }}
+                {{ item.specialty.name }}
             </span>
         </td>
 

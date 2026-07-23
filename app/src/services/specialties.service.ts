@@ -9,11 +9,11 @@ export const specialtiesService = {
   },
 
   create(name: string) {
-    return ApiService.create<Specialty>(ENDPOINT, { name: name.trim() })
+    return ApiService.create<Specialty,Partial<Specialty>>(ENDPOINT, { name: name.trim() })
   },
 
   update(id: string, name: string) {
-    return ApiService.update<Specialty>(ENDPOINT, id, { name: name.trim() })
+    return ApiService.update<Specialty,Partial<Specialty>>(ENDPOINT, id, { name: name.trim() })
   },
 
   remove(id: string) {

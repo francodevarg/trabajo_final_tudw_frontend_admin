@@ -3,34 +3,17 @@ import { ref, computed } from 'vue'
 import {
   Mail, Phone, Stethoscope, IdCard, DollarSign, Send, CheckCircle, AlertCircle, ChevronDown, X,
 } from 'lucide-vue-next'
-import type { DoctorDTO, DoctorAvailabilityDTO } from '@/types'
+import type { Doctor, DoctorAvailabilityDTO } from '@/types'
 import DoctorAvatar from './DoctorAvatar.vue'
 import AppClipboard from '../AppClipboard.vue'
 
 const props = defineProps<{
-  doctor: DoctorDTO
+  doctor: Doctor
 }>()
 
 
 const showFullDescription = ref(false)
 
-const emailStatusConfig = computed(() => {
-  switch (props.doctor.email_status) {
-    case 'sent':
-      return { icon: CheckCircle, text: 'Email de bienvenida enviado', class: 'text-success-600 bg-success-50 border-success-200' }
-    case 'error':
-      return { icon: AlertCircle, text: 'Error al enviar email', class: 'text-error-600 bg-error-50 border-error-200' }
-    default:
-      return { icon: Send, text: 'Enviar email de bienvenida', class: 'text-primary-600 bg-primary-50 border-primary-200 hover:bg-primary-100' }
-  }
-})
-
-function extractSpecialtyName(s: unknown): string {
-  if (!s) return '—'
-  if (typeof s === 'string') return s
-  if (typeof s === 'object' && s !== null && 'name' in s) return (s as { name: string }).name
-  return '—'
-}
 
 function extractInsuranceNames(arr: unknown): string[] {
   if (!Array.isArray(arr)) return []
@@ -90,7 +73,7 @@ const hasLongDescription = computed(() =>
         </h2>
         <p class="text-base text-slate-500 mt-0.5">
           <Stethoscope class="w-3.5 h-3.5 inline mr-1" />
-          {{ extractSpecialtyName(doctor.specialty) }}
+          {{ doctor.specialty.name }}
         </p>
       </div>
       <div class="flex items-center gap-2 shrink-0">

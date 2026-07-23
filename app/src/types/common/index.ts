@@ -1,1 +1,1 @@
-export type { EmailStatus, DayOfWeek } from './common.types'
+export type { DayOfWeek } from './common.types'
