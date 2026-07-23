@@ -5,11 +5,11 @@ import CalendarDay from './CalendarDay.vue'
 import DayDetailModal from './DayDetailModal.vue'
 import { useCalendarMonth } from '@/composables/useCalendarMonth'
 import { useDateLocale } from '@/composables/useDateLocale'
-import type { Appointment } from '@/types'
-import { parseISO, startOfMonth, endOfMonth } from 'date-fns'
+import { parseISO } from 'date-fns'
+import type { AppointmentReadDTO } from '@/types/appointment/appointment.dto.ts'
 
 const props = defineProps<{
-  appointments: Appointment[]
+  appointments: AppointmentReadDTO[]
   selectedDate: string
 }>()
 

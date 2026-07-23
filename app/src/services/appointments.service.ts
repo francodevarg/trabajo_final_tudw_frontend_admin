@@ -1,4 +1,4 @@
-import type { Appointment, AppointmentStatus} from '@/types'
+// import type { Appointment, AppointmentStatus} from '@/types'
 import ApiService from './ApiService'
 import type { AppointmentReadDTO } from '@/types/appointment'
 
@@ -12,7 +12,7 @@ export const appointmentsService = {
     return ApiService.getAll<AppointmentReadDTO>(ENDPOINT, params)
   },
 
-  updateStatus(id: number, status: AppointmentStatus) {
-    return ApiService.update<Appointment>(ENDPOINT, id, { status })
-  }
+  // updateStatus(id: number, status: AppointmentStatus) {
+  //   return ApiService.update<Appointment>(ENDPOINT, id, { status })
+  // }
 }

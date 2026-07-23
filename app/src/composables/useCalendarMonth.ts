@@ -1,6 +1,6 @@
-import type { Appointment } from '@/types'
 import { computed } from 'vue'
 import { groupByDate } from './useGroupedByDate'
+import type { AppointmentReadDTO } from '@/types/appointment'
 
 function formatDateLocal(date: Date): string {
   const y = date.getFullYear()
@@ -11,7 +11,7 @@ function formatDateLocal(date: Date): string {
 
 export function useCalendarMonth(
   currentDate: () => Date,
-  appointments: () => Appointment[],
+  appointments: () => AppointmentReadDTO[],
 ) {
   return computed(() => {
     const grouped = groupByDate(appointments())

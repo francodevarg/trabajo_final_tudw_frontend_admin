@@ -1,7 +1,8 @@
-import type { Appointment } from '@/types'
+import type { AppointmentReadDTO } from "@/types/appointment"
 
-export function groupByDate(appointments: Appointment[]) {
-  return appointments.reduce<Record<string, Appointment[]>>((acc, appointment) => {
+
+export function groupByDate(appointments: AppointmentReadDTO[]) {
+  return appointments.reduce<Record<string, AppointmentReadDTO[]>>((acc, appointment) => {
     acc[appointment.date] ??= []
     acc[appointment.date].push(appointment)
 

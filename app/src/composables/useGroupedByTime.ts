@@ -1,10 +1,10 @@
+import type { AppointmentReadDTO } from '@/types/appointment'
 import { computed, type ComputedRef } from 'vue'
-import type { Appointment } from '@/types'
 
-export type TimeGroup = [string, Appointment[]]
+export type TimeGroup = [string, AppointmentReadDTO[]]
 
-export function groupByTime(appointments: Appointment[]): TimeGroup[] {
-  const groups = new Map<string, Appointment[]>()
+export function groupByTime(appointments: AppointmentReadDTO[]): TimeGroup[] {
+  const groups = new Map<string, AppointmentReadDTO[]>()
   for (const appt of appointments) {
     const key = appt.time.slice(0, 5)
     if (!groups.has(key)) groups.set(key, [])
@@ -14,7 +14,7 @@ export function groupByTime(appointments: Appointment[]): TimeGroup[] {
 }
 
 export function useGroupedByTime(
-  appointments: ComputedRef<Appointment[]>,
+  appointments: ComputedRef<AppointmentReadDTO[]>,
 ): ComputedRef<TimeGroup[]> {
   return computed(() => groupByTime(appointments.value))
 }

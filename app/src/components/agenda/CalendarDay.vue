@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { AppointmentReadDTO } from '@/types/appointment';
 import { computed } from 'vue'
-import type { Appointment } from '@/types'
 
 const props = defineProps<{
   date: string | null
   dayNumber: number | null
-  items: Appointment[]
+  items: AppointmentReadDTO[]
   count: number
   isToday: boolean
   isCurrentMonth: boolean

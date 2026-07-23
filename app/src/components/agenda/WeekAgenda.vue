@@ -5,15 +5,16 @@ import AppointmentCard from './AppointmentCard.vue'
 import { useDateLocale } from '@/composables/useDateLocale'
 import { groupByTime } from '@/composables/useGroupedByTime'
 import type { Appointment } from '@/types'
+import type { AppointmentReadDTO } from '@/types/appointment/appointment.dto.ts'
 
 type WeekDay = {
   date: string
   isToday: boolean
-  items: Appointment[]
+  items: AppointmentReadDTO[]
 }
 
 const props = defineProps<{
-  appointments: Appointment[]
+  appointments: AppointmentReadDTO[]
 }>()
 
 const { formatDayLabel } = useDateLocale()
@@ -24,7 +25,7 @@ const { formatDayLabel } = useDateLocale()
  * y hace merge con los turnos existentes
  */
 const weekDays = computed<WeekDay[]>(() => {
-  const grouped = props.appointments.reduce<Record<string, Appointment[]>>(
+  const grouped = props.appointments.reduce<Record<string, AppointmentReadDTO[]>>(
     (acc, appt) => {
       ;(acc[appt.date] ??= []).push(appt)
       return acc

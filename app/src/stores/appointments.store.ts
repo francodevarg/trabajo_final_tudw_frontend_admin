@@ -2,12 +2,12 @@ import { computed, reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 import { appointmentsService } from '@/services/appointments.service'
-import type { Appointment, AppointmentStatus } from '@/types'
-import {appointmentDtoToDomain} from  '@/types'
+import type { AppointmentStatus } from '@/types'
 import { useUiStore } from './ui.store'
+import type { AppointmentReadDTO } from '@/types/appointment'
 
 export const useAppointmentsStore = defineStore('appointments', () => {
-  const appointments = ref<Appointment[]>([])
+  const appointments = ref<AppointmentReadDTO[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -23,7 +23,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     error.value = null
 
     try {
-      const { data } = await appointmentsService.getAll(dateFrom, dateTo)
+      const data = await appointmentsService.getAll(dateFrom, dateTo)
       appointments.value = data
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : 'Error al cargar los turnos'
@@ -35,12 +35,9 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     }
   }
   const filteredAppointments = computed(() => {
-    console.log('Filtro seleccionado:', filters.specialtyId)
-
     return appointments.value.filter(appointment => {
-      console.log('Turno:', appointment.id)
 
-      if (filters.specialtyId && appointment.doctor.specialty.id !== filters.specialtyId) {
+      if (filters.specialtyId && appointment.doctor_detail.specialty.id !== filters.specialtyId) {
         return false
       }
 

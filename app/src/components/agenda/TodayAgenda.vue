@@ -2,10 +2,10 @@
 import { computed } from 'vue'
 import { useGroupedByTime } from '@/composables/useGroupedByTime'
 import AppointmentCard from './AppointmentCard.vue'
-import type { Appointment } from '@/types'
+import type { AppointmentReadDTO } from '@/types/appointment/appointment.dto.ts';
 
 const props = defineProps<{
-  appointments: Appointment[]
+  appointments: AppointmentReadDTO[]
 }>()
 
 const groupedAppointments = useGroupedByTime(

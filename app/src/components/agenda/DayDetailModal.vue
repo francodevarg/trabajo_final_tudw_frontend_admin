@@ -4,12 +4,12 @@ import { X } from 'lucide-vue-next'
 import AppointmentCard from './AppointmentCard.vue'
 import { useDateLocale } from '@/composables/useDateLocale'
 import { groupByTime } from '@/composables/useGroupedByTime'
-import type { Appointment } from '@/types'
+import type { AppointmentReadDTO } from '@/types/appointment/appointment.dto.ts'
 
 const props = defineProps<{
   open: boolean
   date: string
-  appointments: Appointment[]
+  appointments: AppointmentReadDTO[]
 }>()
 
 const emit = defineEmits<{
