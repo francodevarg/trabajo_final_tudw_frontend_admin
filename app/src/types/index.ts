@@ -15,7 +15,13 @@ export type {
 
 export type { DayOfWeek } from './common/common.types'
 
-export type { Appointment, AppointmentStatus, DoctorBriefDTO, PatientDTO } from './appointment'
+export type {
+  Appointment,
+  AppointmentStatus,
+  AppointmentStatusAction,
+  AppointmentActionConfig,
+  AppointmentReadDTO
+} from './appointment'
 export { appointmentDtoToDomain } from './appointment'
 
 export type { Patient } from './patient'
@@ -27,9 +33,7 @@ export type { SpecialtyDTO } from './specialty/specialty.dto'
 export type { InsuranceDTO } from './insurance/insurance.dto'
 export type { CreateDoctorRequest, UpdateDoctorRequest } from './doctor/doctor.dto'
 
-
 export type { OtpRequest, OtpResponse, OtpVerify, AuthError } from './auth/auth.dto'
-
 
 export { specialtyDtoToDomain, specialtyDomainToDto } from './specialty/specialty.mapper'
 

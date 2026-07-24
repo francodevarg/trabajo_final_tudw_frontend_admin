@@ -1,6 +1,13 @@
 export type AppointmentStatus =
   'scheduled' | 'checked_in' | 'in_progress' | 'completed' | 'cancelled' | 'no_show'
 
+export type AppointmentStatusAction =
+  | 'check-in'
+  | 'cancel'
+  | 'start'
+  | 'complete'
+  | 'no-show'
+
 export interface Appointment {
   id: number
 

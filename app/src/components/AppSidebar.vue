@@ -11,6 +11,7 @@ import {
   HeartPulse,
   LogOut,
   ChevronRight,
+  Clock,
 } from 'lucide-vue-next'
 
 const props = defineProps<{ open: boolean }>()
@@ -31,6 +32,7 @@ const menuItems = [
 const medicoItems = [
   { name: 'Mi Agenda', to: '/admin/turnos', icon: CalendarDays },
   { name: 'Historial', to: '/admin/historial', icon: ChartColumn },
+  { name: 'Mis Horarios', to: '/admin/horarios/', icon: Clock},
 ]
 
 const items = computed(() => (auth.userGroup === 'ADMIN' ? menuItems : medicoItems))

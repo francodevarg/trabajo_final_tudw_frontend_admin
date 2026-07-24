@@ -1,3 +1,6 @@
-export type { Appointment, AppointmentStatus } from './appointment.types'
-export type { DoctorBriefDTO, PatientDTO, AppointmentReadDTO } from './appointment.dto'
+export type { Appointment, AppointmentStatus, AppointmentStatusAction } from './appointment.types'
+export type { AppointmentReadDTO } from './appointment.dto'
 export { appointmentDtoToDomain } from './appointment.mapper'
+export { getStatusConfig } from './appointment.status'
+export { getAvailableActions } from './appointment.actions'
+export type { AppointmentActionConfig } from './appointment.actions'

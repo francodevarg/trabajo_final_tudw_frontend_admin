@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 
 import { appointmentsService } from '@/services/appointments.service'
 import type { AppointmentStatus } from '@/types'
+import type { AppointmentStatusAction } from '@/types/appointment'
 import { useUiStore } from './ui.store'
 import type { AppointmentReadDTO } from '@/types/appointment'
 
@@ -34,16 +35,34 @@ export const useAppointmentsStore = defineStore('appointments', () => {
       loading.value = false
     }
   }
+
   const filteredAppointments = computed(() => {
     return appointments.value.filter(appointment => {
-
       if (filters.specialtyId && appointment.doctor_detail.specialty.id !== filters.specialtyId) {
         return false
       }
-
       return true
     })
   })
+
+  async function updateAppointmentStatus(
+    appointmentId: number,
+    action: AppointmentStatusAction
+  ): Promise<void> {
+    const ui = useUiStore()
+    try {
+      const updated = await appointmentsService.performAction(appointmentId, action)
+      const idx = appointments.value.findIndex(a => a.id === appointmentId)
+      if (idx !== -1) {
+        appointments.value[idx] = updated
+      }
+      ui.success('Turno actualizado correctamente')
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : 'Error al actualizar el turno'
+      console.error('Error updating appointment status:', message)
+      ui.error(message)
+    }
+  }
 
   return {
     appointments,
@@ -51,6 +70,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     error,
     filters,
     filteredAppointments,
-    fetchAppointments
+    fetchAppointments,
+    updateAppointmentStatus
   }
 })

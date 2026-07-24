@@ -34,6 +34,15 @@ class ApiService {
     return data;
   }
 
+  async patch<Response>(
+    url: string,
+    id: number | string,
+    action: string
+  ): Promise<Response> {
+    const { data } = await axios.patch<Response>(`${url}/${id}/${action}`);
+    return data;
+  }
+
   async destroy(
     url: string,
     id: number | string
