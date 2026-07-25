@@ -102,18 +102,14 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { ArrowLeft, ShieldCheck } from 'lucide-vue-next'
 
 import { useAuthStore } from '@/stores/auth.store'
 import { AuthServiceError } from '@/services/auth.service'
 import { useOtpAuth } from '@/composables/auth/useOtpAuth' // Ajusta la ruta si es necesario
 
-import { insurancesService } from '@/services/insurances.service'
-import { specialtiesService } from '@/services/specialties.service'
 
 const auth = useAuthStore()
-const router = useRouter()
 
 const showOtp = ref(false)
 const email = ref('')
@@ -142,6 +138,10 @@ const formattedCooldown = computed(() => {
   // padStart(2, '0') asegura que 5 segundos se vea como "05" y no "5"
   return `${minutes}m ${seconds.toString().padStart(2, '0')}s`
 })
+
+const emit = defineEmits<{
+  (e: 'go-home'): void
+}>()
 
 // --- Lógica del Step 1 ---
 async function submitEmail() {
@@ -175,13 +175,7 @@ async function verifyOtp() {
 
   if (!ok) return
 
-  // Si la verificación es exitosa, precargamos datos necesarios
-  await Promise.all([
-    insurancesService.getAll(),
-    specialtiesService.getAll()
-  ])
-
-  router.push('/admin/turnos')
+  emit('go-home')
 }
 
 // Wrapper para pasar el email correctamente al composable

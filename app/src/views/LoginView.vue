@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.store'
 import { HeartPulse, CircleCheck } from "lucide-vue-next"
@@ -8,10 +8,19 @@ import AuthFormOTP from '../components/auth/AuthFormOTP.vue'
 const router = useRouter()
 const auth = useAuthStore()
 
+const userHome = computed(() => {
+  return auth.userGroup === 'ADMIN'?  { name: 'admin-turnos'} : { name: 'doctor-turnos' }
+})
+
+const goHome = () => {
+  router.push(userHome.value)
+}
+
 onMounted(() => {
   auth.init()
+
   if (auth.isAuthenticated) {
-    router.replace('/admin/turnos')
+    goHome()
   }
 })
 
@@ -66,7 +75,7 @@ onMounted(() => {
           <p class="text-lg font-semibold text-slate-900">MediCare</p>
         </div>
 
-        <AuthFormOTP />
+        <AuthFormOTP @go-home=""/>
 
       </div>
     </div>
