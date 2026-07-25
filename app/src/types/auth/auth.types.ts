@@ -11,6 +11,7 @@ export interface JwtPayload {
   email: string
   first_name: string
   last_name: string
+  doctor_id?: number
 }
 
 export interface OtpTokens {

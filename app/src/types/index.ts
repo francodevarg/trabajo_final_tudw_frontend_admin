@@ -1,5 +1,5 @@
 /* ── Domain models ── */
-export type { Doctor, DoctorAvailability } from './doctor/doctor.types'
+export type { Doctor, DoctorAvailability, DoctorDTO, DoctorWriteDTO, DoctorAvailabilityDTO } from './doctor'
 
 export type { Specialty } from './specialty/specialty.types'
 

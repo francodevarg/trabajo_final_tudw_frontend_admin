@@ -15,7 +15,7 @@ const emit = defineEmits<{
 
 <template>
     <AppModal :open="open" title="Detalle del médico" max-width="sm:max-w-4xl" @close="emit('close')">
-        <DoctorViewCard v-if="doctor" :key="doctor.id + (doctor.email_status ?? '')" :doctor="doctor"
+        <DoctorViewCard v-if="doctor" :key="doctor.id" :doctor="doctor"
             @close="emit('close')" />
     </AppModal>
 </template>

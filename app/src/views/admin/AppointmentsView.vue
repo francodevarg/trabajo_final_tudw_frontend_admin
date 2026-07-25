@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, onBeforeMount, onMounted, watch } from 'vue'
 
 import AgendaToolbar from '@/components/agenda/AgendaToolbar.vue'
 import TodayAgenda from '@/components/agenda/TodayAgenda.vue'
@@ -10,9 +10,28 @@ import { useAppointmentsStore } from '@/stores/appointments.store'
 import AgendaFilters from '@/components/agenda/AgendaFilters.vue'
 import { useSpecialtiesStore } from '@/stores/specialties.store'
 import { CalendarDays } from 'lucide-vue-next'
+import { useInsurancesStore } from '@/stores/insurances.store'
+import { useDoctorsStore } from '@/stores/doctors.store'
+import { useAuthStore } from '@/stores/auth.store'
+const auth = useAuthStore()
 const navigation = useAgendaNavigation()
 const appointments = useAppointmentsStore()
 const specialties = useSpecialtiesStore()
+const insurances = useInsurancesStore()
+const doctors = useDoctorsStore()
+
+onMounted(async () => {    
+    const { from, to } = navigation.getRange()
+  if(auth.userGroup == 'ADMIN'){
+    appointments.fetchAppointments(from, to)
+    await specialties.fetchAll()
+    await insurances.fetchAll()
+    await doctors.fetchAll()
+  }else{
+    appointments.fetchAppointments(from, to)
+
+  }
+})
 
 watch(
   [navigation.viewMode, navigation.selectedDate],

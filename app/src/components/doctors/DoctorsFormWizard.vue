@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 import type { DoctorDTO, DoctorWriteDTO, DoctorAvailabilityDTO } from '@/types'
@@ -11,6 +11,7 @@ import StepIndicator from '@/components/StepIndicator.vue'
 const props = defineProps<{
   initial?: DoctorDTO | null
   emailError?: string | null
+  mode?: 'create' | 'edit' | 'self-edit'
 }>()
 
 const emit = defineEmits<{
@@ -66,7 +67,7 @@ const { handleSubmit, values, setFieldError, setFieldValue, resetForm, validate 
     phone: '',
     specialty_id: undefined,
     license_number: '',
-    consultation_fee: '',
+    consultation_fee: 0,
     description: '',
     insurance_ids: [],
     availabilities: [],
@@ -84,6 +85,11 @@ const { value: description } = useField<string>('description')
 const { value: insuranceIds } = useField<number[]>('insurance_ids')
 const { value: availabilities } = useField<DoctorAvailabilityDTO[]>('availabilities')
 
+/* ── Mode helpers ── */
+
+const isSelfEdit = computed(() => props.mode === 'self-edit')
+const isEmailDisabled = computed(() => !!props.initial || isSelfEdit.value)
+
 /* ── Server-side email error ── */
 
 watch(() => props.emailError, (err) => {
@@ -92,9 +98,6 @@ watch(() => props.emailError, (err) => {
 
 /* ── Populate from initial (edit mode) ── */
 
-function extractId(s: any | null): number | undefined {
-  return specialtiesStore.items.find(spec => spec.id === s?.id)?.id
-}
 /* ── Step state ── */
 
 const STEP_LABELS = ['Personal', 'Profesional', 'Obras sociales', 'Disponibilidad']
@@ -104,7 +107,7 @@ const stepErrors = ref<string[]>([])
 
 watch(() => props.initial, (v) => {
   if (v) {
-    const specId = extractId(v.specialty)
+    const specId = Number(v.specialty.id)
     resetForm({
       values: {
         first_name: v.first_name ?? '',
@@ -113,7 +116,7 @@ watch(() => props.initial, (v) => {
         phone: v.phone ?? '',
         specialty_id: specId,
         license_number: v.license_number ?? '',
-        consultation_fee: v.consultation_fee ?? '',
+        consultation_fee: Number(v.consultation_fee) ?? 0,
         description: v.description ?? '',
         insurance_ids: v.insurances?.map(i => i.id).filter((id): id is number => id != null) ?? [],
         availabilities: v.availabilities?.map(a => ({ ...a })) ?? [],
@@ -179,13 +182,13 @@ const onSubmit = handleSubmit((formValues) => {
   const payload: DoctorWriteDTO = {
     first_name: formValues.first_name?.trim() || undefined,
     last_name: formValues.last_name?.trim() || undefined,
-    email: formValues.email?.trim() || undefined,
+    email: isSelfEdit.value ? undefined : formValues.email?.trim() || undefined,
     specialty_id: formValues.specialty_id || undefined,
     insurance_ids: formValues.insurance_ids?.length ? formValues.insurance_ids : undefined,
     license_number: formValues.license_number?.trim() || undefined,
     phone: formValues.phone?.trim() || undefined,
     description: formValues.description?.trim() || undefined,
-    consultation_fee: formValues.consultation_fee?.trim() || undefined,
+    consultation_fee: formValues.consultation_fee || undefined,
     availabilities: formValues.availabilities?.length ? formValues.availabilities : undefined,
   }
   emit('submit', payload)
@@ -226,9 +229,9 @@ defineExpose({ submit })
       <div>
         <label class="label" for="wiz-email">Email</label>
         <input id="wiz-email" v-model="email" type="email" class="input" :class="{
-          'opacity-60 cursor-not-allowed': !!initial,
+          'opacity-60 cursor-not-allowed': isEmailDisabled,
           'border-error-300 ring-1 ring-error-200': emailError,
-        }" :disabled="!!initial" placeholder="medico@correo.com" />
+        }" :disabled="isEmailDisabled" placeholder="medico@correo.com" />
         <p v-if="emailError" class="mt-1.5 text-xs text-error-600">{{ emailError }}</p>
       </div>
       <div>

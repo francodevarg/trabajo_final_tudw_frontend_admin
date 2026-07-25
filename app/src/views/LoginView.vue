@@ -75,7 +75,7 @@ onMounted(() => {
           <p class="text-lg font-semibold text-slate-900">MediCare</p>
         </div>
 
-        <AuthFormOTP @go-home=""/>
+        <AuthFormOTP @go-home="goHome"/>
 
       </div>
     </div>

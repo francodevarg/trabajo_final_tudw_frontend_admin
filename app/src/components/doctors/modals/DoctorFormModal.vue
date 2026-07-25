@@ -6,7 +6,7 @@ import type { DoctorDTO } from '@/types'
 
 const props = defineProps<{
     open: boolean
-    mode: 'create' | 'edit'
+    mode: 'create' | 'edit' | 'self-edit'
     doctor: DoctorDTO | null
     loading?: boolean
     emailError?: string | null
@@ -20,17 +20,15 @@ const emit = defineEmits<{
 
 const formRef = ref<InstanceType<typeof DoctorsFormWizard> | null>(null)
 
-const title = computed(() =>
-    props.mode === 'create'
-        ? 'Nuevo médico'
-        : 'Editar médico'
-)
+const title = computed(() => {
+    if (props.mode === 'self-edit') return 'Editar mi perfil'
+    return props.mode === 'create' ? 'Nuevo médico' : 'Editar médico'
+})
 
-const buttonText = computed(() =>
-    props.mode === 'create'
-        ? 'Crear médico'
-        : 'Guardar cambios'
-)
+const buttonText = computed(() => {
+    if (props.mode === 'self-edit') return 'Guardar perfil'
+    return props.mode === 'create' ? 'Crear médico' : 'Guardar cambios'
+})
 
 function triggerSubmit() {
     formRef.value?.submit()
@@ -47,7 +45,7 @@ function handleSubmit(payload: any) {
 
 <template>
     <AppModal :open="open" :title="title" max-width="max-w-xl" @close="emit('close')">
-        <DoctorsFormWizard ref="formRef" :initial="doctor" :email-error="emailError" @submit="handleSubmit" />
+        <DoctorsFormWizard ref="formRef" :initial="doctor" :email-error="emailError" :mode="mode" @submit="handleSubmit" />
 
         <template #footer>
             <div class="flex justify-end gap-2">

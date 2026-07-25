@@ -47,7 +47,7 @@ function close() {
 
 
       <!-- modal -->
-      <div class="relative w-full sm:max-w-lg bg-white rounded-t-2xl sm:rounded-xl shadow-xl overflow-hidden">
+      <div class="relative w-full sm:max-w-lg xl:max-w-[720px] bg-white rounded-t-2xl sm:rounded-xl shadow-xl overflow-hidden">
 
         <!-- header -->
         <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
