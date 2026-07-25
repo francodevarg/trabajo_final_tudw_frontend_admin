@@ -12,6 +12,7 @@ import {
   LogOut,
   ChevronRight,
   Clock,
+  UserCog,
 } from 'lucide-vue-next'
 
 const props = defineProps<{ open: boolean }>()
@@ -30,15 +31,14 @@ const menuItems = [
 ]
 
 const medicoItems = [
-  { name: 'Mi Agenda', to: '/admin/turnos', icon: CalendarDays },
-  { name: 'Historial', to: '/admin/historial', icon: ChartColumn },
-  { name: 'Mis Horarios', to: '/admin/horarios/', icon: Clock},
+  { name: 'Mi Agenda', to: '/doctor/turnos', icon: CalendarDays },
+  { name: 'Historial', to: '/doctor/historial', icon: ChartColumn },
+  { name: 'Mi Perfil', to: '/doctor/mi-perfil', icon: UserCog },
 ]
 
 const items = computed(() => (auth.userGroup === 'ADMIN' ? menuItems : medicoItems))
 
 function isActive(to: string) {
-  if (to === '/admin/turnos') return route.path === '/admin/turnos'
   return route.path.startsWith(to)
 }
 

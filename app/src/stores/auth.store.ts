@@ -4,7 +4,7 @@ import type { OtpTokens, UserRole } from '@/types'
 import { authService, AuthServiceError } from '@/services/auth.service'
 import { usePermissionsStore } from './permissions.store'
 import { getEmailFromToken, getUserNameFromToken } from '@/helpers/jwt'
-import { getRoleFromToken } from '../helpers/jwt'
+import { getRoleFromToken, getDoctorIdFromToken } from '../helpers/jwt'
 
 const ACCESS_KEY = 'medicare_access'
 const REFRESH_KEY = 'medicare_refresh'
@@ -12,6 +12,7 @@ const REFRESH_KEY = 'medicare_refresh'
 export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref<string | null>(localStorage.getItem(ACCESS_KEY))
   const refreshToken = ref<string | null>(localStorage.getItem(REFRESH_KEY))
+  const userDoctorId = ref<number | null>(null)
   const userEmail = ref<string | null>(null)
   const userFirstName = ref<string | null>(null)
   const userLastName = ref<string | null>(null)
@@ -22,6 +23,10 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!accessToken.value)
 
   function extractUser(token: string) {
+    const doctorId = getDoctorIdFromToken(token)
+    if (userDoctorId != null) {
+      userDoctorId.value = doctorId
+    }
     const email = getEmailFromToken(token)
     if (email != null && email !== '') {
       userEmail.value = email
@@ -116,6 +121,7 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     accessToken,
     refreshToken,
+    userDoctorId,
     userEmail,
     userFirstName,
     userLastName,

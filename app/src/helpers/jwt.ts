@@ -42,3 +42,8 @@ export function getRoleFromToken(token: string): UserRole | null {
   const payload = decodeJwt(token)
   return payload?.group ?? null
 }
+
+export function getDoctorIdFromToken(token: string): number | null {
+  const payload = decodeJwt(token)
+  return payload?.doctor_id ?? null
+}

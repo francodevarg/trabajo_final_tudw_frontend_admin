@@ -1,13 +1,59 @@
 <script setup lang="ts">
+import { ref, computed, onMounted, watch } from 'vue'
 import type { AppointmentReadDTO } from '@/types/appointment'
-import { User, CreditCard, Stethoscope } from 'lucide-vue-next'
+import { User, CreditCard, Stethoscope, FileText, Eye } from 'lucide-vue-next'
 import { getStatusConfig } from '@/types/appointment'
 import AppointmentActions from './AppointmentActions.vue'
+import ClinicalEvolutionModal from './ClinicalEvolutionModal.vue'
+import { useEvolutionsStore } from '@/stores/evolutions.store'
 
 const props = defineProps<{
   appt: AppointmentReadDTO
 }>()
 
+const evolutionsStore = useEvolutionsStore()
+
+const showModal = ref(false)
+const modalMode = ref<'create' | 'view'>('create')
+
+const isCompleted = computed(() => props.appt.status === 'completed')
+
+const hasEvolution = computed(() => evolutionsStore.hasEvolution(props.appt.id))
+
+const currentEvolution = computed(() => {
+  if (hasEvolution.value) {
+    return evolutionsStore.currentEvolution?.appointment === props.appt.id
+      ? evolutionsStore.currentEvolution
+      : null
+  }
+  return null
+})
+
+watch(() => evolutionsStore.currentEvolution, (evo) => {
+  if (evo && evo.appointment === props.appt.id) {
+    // Already cached via store
+  }
+})
+
+onMounted(async () => {
+  if (isCompleted.value) {
+    await evolutionsStore.fetchEvolutionByAppointment(props.appt.id)
+  }
+})
+
+function openCreate() {
+  modalMode.value = 'create'
+  showModal.value = true
+}
+
+function openView() {
+  modalMode.value = 'view'
+  showModal.value = true
+}
+
+function onCreated() {
+  evolutionsStore.fetchEvolutionByAppointment(props.appt.id)
+}
 
 function formatDni(dni: number): string {
   const s = String(dni).padStart(8, '0')
@@ -34,11 +80,29 @@ function formatDni(dni: number): string {
               <CreditCard class="w-3 h-3 flex-shrink-0" />
               {{ formatDni(appt.patient_detail.dni) }}
             </div>
+            <div v-if="isCompleted" class="mt-1 pl-5">
+              <button
+                v-if="!hasEvolution"
+                class="inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 font-medium transition-colors"
+                @click.stop="openCreate"
+              >
+                <FileText class="w-3 h-3" />
+                Registrar evolución
+              </button>
+              <button
+                v-else
+                class="inline-flex items-center gap-1 text-xs text-green-600 hover:text-green-700 font-medium transition-colors"
+                @click.stop="openView"
+              >
+                <Eye class="w-3 h-3" />
+                Ver evolución
+              </button>
+            </div>
           </div>
           <span
             class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap bg-slate-100 text-slate-600 flex-shrink-0">
             <span class="w-1.5 h-1.5 rounded-full bg-slate-400" />
-            {{ displayStatus }}
+            {{ getStatusConfig(appt.status).label }}
           </span>
         </div>
 
@@ -75,6 +139,24 @@ function formatDni(dni: number): string {
               <CreditCard class="w-3 h-3" />
               {{ formatDni(appt.patient_detail.dni) }}
             </span>
+            <template v-if="isCompleted">
+              <button
+                v-if="!hasEvolution"
+                class="inline-flex items-center gap-1 text-primary-600 hover:text-primary-700 font-medium transition-colors"
+                @click.stop="openCreate"
+              >
+                <FileText class="w-3 h-3" />
+                Registrar evolución
+              </button>
+              <button
+                v-else
+                class="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium transition-colors"
+                @click.stop="openView"
+              >
+                <Eye class="w-3 h-3" />
+                Ver evolución
+              </button>
+            </template>
           </div>
         </div>
 
@@ -106,4 +188,13 @@ function formatDni(dni: number): string {
       </div>
     </div>
   </div>
+
+  <ClinicalEvolutionModal
+    :open="showModal"
+    :appointment="appt"
+    :mode="modalMode"
+    :evolution="currentEvolution"
+    @close="showModal = false"
+    @created="onCreated"
+  />
 </template>
