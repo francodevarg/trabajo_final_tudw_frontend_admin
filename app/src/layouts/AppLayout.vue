@@ -8,11 +8,11 @@ const sidebarOpen = ref(false)
 </script>
 
 <template>
-  <div class="min-h-screen flex bg-slate-50">
+  <div class="h-screen overflow-hidden flex bg-slate-50">
     <AppSidebar v-model:open="sidebarOpen" />
     <div class="flex-1 flex flex-col min-w-0">
       <AppNavbar :on-menu="() => (sidebarOpen = true)" />
-      <main class="flex-1 p-5 sm:p-6 lg:p-8 overflow-x-auto app-scroll">
+      <main class="flex-1 p-5 sm:p-6 lg:p-8 overflow-auto app-scroll">
         <RouterView v-slot="{ Component }">
           <Transition name="page" mode="out-in">
             <component :is="Component" />

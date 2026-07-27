@@ -12,7 +12,7 @@ export const evolutionsService = {
   async getByAppointment(appointmentId: number): Promise<EvolutionReadDTO | null> {
     try {
       const { data } = await axios.get<EvolutionReadDTO>(
-        `${ENDPOINT}/appointment/${appointmentId}/`
+        `${ENDPOINT}/appointment/${appointmentId}`
       )
       return data
     } catch (e: any) {

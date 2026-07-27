@@ -15,7 +15,13 @@ const emit = defineEmits<{
 
 
 function sexLabel(sex: string): string {
-  const map: Record<string, string> = { M: 'Masculino', F: 'Femenino' }
+  const map: Record<string, string> = {
+    M: 'Masculino',
+    F: 'Femenino',
+    O: 'Otro',
+    N: 'No Especificado',
+  }
+
   return map[sex] || sex
 }
 
@@ -23,7 +29,10 @@ function sexBadgeClass(sex: string): string {
   const map: Record<string, string> = {
     M: 'bg-primary-50 text-primary-700',
     F: 'bg-rose-50 text-rose-700',
+    O: 'bg-violet-50 text-violet-700',
+    N: 'bg-slate-100 text-slate-600',
   }
+
   return map[sex] || 'bg-slate-100 text-slate-600'
 }
 </script>
@@ -50,7 +59,6 @@ function sexBadgeClass(sex: string): string {
         <thead>
           <tr class="border-b border-slate-100 bg-slate-50/80">
             <th class="text-left px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider">Paciente</th>
-            <th class="text-left px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider hidden xl:table-cell">Email</th>
             <th class="text-left px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider hidden md:table-cell">DNI</th>
             <th class="text-left px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider hidden lg:table-cell">Edad</th>
             <th class="text-left px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider hidden lg:table-cell">Sexo</th>
@@ -73,10 +81,7 @@ function sexBadgeClass(sex: string): string {
               </div>
             </td>
             <td class="px-5 py-3.5 hidden md:table-cell">
-              {{ item.email }}
-            </td>
-            <td class="px-5 py-3.5 hidden md:table-cell">
-              <code class="text-xs text-slate-500 bg-slate-100 rounded-md px-2 py-0.5">{{ item.dni }}</code>
+              <code class="text-xs rounded-md px-2 py-0.5">{{ item.dni }}</code>
             </td>
 
             <td class="px-5 py-3.5 hidden lg:table-cell">

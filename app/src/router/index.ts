@@ -75,8 +75,14 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'doctor/historial',
-        name: 'doctor-appointments-history',
+        name: 'doctor-historial',
         component: () => import('@/views/doctor/AppointmentHistoryView.vue'),
+        meta:DOCTOR_ROUTE
+      },
+      {
+        path: 'doctor/paciente/:patientId/historial',
+        name: 'doctor-paciente-historial',
+        component: () => import('@/views/doctor/PatientHistoryView.vue'),
         meta:DOCTOR_ROUTE
       },
       {

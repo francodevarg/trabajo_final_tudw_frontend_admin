@@ -24,7 +24,7 @@ export type {
 } from './appointment'
 export { appointmentDtoToDomain } from './appointment'
 
-export type { Patient } from './patient'
+export type { Patient, PatientHistoryItem } from './patient'
 
 /* ── DTOs ── */
 

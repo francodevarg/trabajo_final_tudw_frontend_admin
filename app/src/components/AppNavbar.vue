@@ -11,7 +11,7 @@ const auth = useAuthStore()
 
 const title = computed(() => {
   const map: Record<string, string> = {
-    admin: 'Turnos',
+    'admin-turnos': 'Turnos',
     'admin-medicos': 'Médicos',
     'admin-pacientes': 'Pacientes',
     'admin-especialidades': 'Especialidades',
@@ -20,9 +20,10 @@ const title = computed(() => {
     'admin-permisos': 'Roles y Permisos',
     'admin-reportes': 'Reportes',
     'medico-agenda': 'Mi Agenda',
-    'medico-turnos': 'Turnos',
-    'medico-atencion': 'Registrar Atención',
-    'medico-historial': 'Historial del Paciente',
+    'doctor-turnos': 'Turnos',
+    'doctor-historial': 'Historial',
+    'doctor-mi-perfil': 'Editar Perfil',
+    'doctor-paciente-historial': 'Historia Clínica'
   }
   return map[route.name as string] || 'MediCare'
 })
