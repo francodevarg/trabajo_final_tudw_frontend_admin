@@ -26,11 +26,11 @@ El sistema consume los servicios expuestos por el backend Django mediante una AP
 ## Screenshots
 
 <p align="center">
-  <img src="./src/assets/overview/ScreenDoctors.png" width="800" alt="Arquitectura del proyecto">
+  <img src="./app/src/assets/overview/ScreenDoctors.png" width="800" alt="Arquitectura del proyecto">
 </p>
 
 
 <p align="center">
-  <img src="./src/assets/overview/ScreenAppointments.png" width="800" alt="Arquitectura del proyecto">
+  <img src="./app/src/assets/overview/ScreenAppointments.png" width="800" alt="Arquitectura del proyecto">
 </p>
 
