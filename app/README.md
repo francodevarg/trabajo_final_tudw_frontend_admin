@@ -18,15 +18,19 @@ El sistema consume los servicios expuestos por el backend Django mediante una AP
 
 - 🔐 Autenticación de usuarios administrativos y profesionales.
 - 👨‍⚕️ Gestión de Doctores.
-- 🏥 Gestión de especialidades médicas.
+- 🏥 Gestión de especialidades médicas y obras sociales.
 - 🗓️ Administración de horarios de atención.
 - 📅 Visualización y gestión de turnos.
 - ✅ Confirmación y actualización del estado de turnos.
-- 👥 Administración de información asociada a pacientes(incoming)
-- 📊 Panel de gestión interno(incoming)
 
-## Overwiev
+## Screenshots
 
 <p align="center">
-  <img src="./src/assets/overview/DashboardDoctors.png" width="800" alt="Arquitectura del proyecto">
+  <img src="./src/assets/overview/ScreenDoctors.png" width="800" alt="Arquitectura del proyecto">
 </p>
+
+
+<p align="center">
+  <img src="./src/assets/overview/ScreenAppointments.png" width="800" alt="Arquitectura del proyecto">
+</p>
+
