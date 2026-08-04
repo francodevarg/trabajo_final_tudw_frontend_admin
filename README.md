@@ -23,6 +23,11 @@ El sistema consume los servicios expuestos por el backend Django mediante una AP
 - 📅 Visualización y gestión de turnos.
 - ✅ Confirmación y actualización del estado de turnos.
 
+## Deploy
+
+- 🚀 [**DEPLOY.md**](https://github.com/francodevarg/trabajo_final_tudw_frontend_admin/blob/master/DEPLOY.md): guía de instalación, configuración del entorno.
+
+
 ## Screenshots
 
 <p align="center">
