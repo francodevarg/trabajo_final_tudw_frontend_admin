@@ -139,24 +139,20 @@ function formatDni(dni: number): string {
               <CreditCard class="w-3 h-3" />
               {{ formatDni(appt.patient_detail.dni) }}
             </span>
-            <template v-if="isCompleted">
-              <button
-                v-if="!hasEvolution"
-                class="inline-flex items-center gap-1 text-primary-600 hover:text-primary-700 font-medium transition-colors"
-                @click.stop="openCreate"
-              >
-                <FileText class="w-3 h-3" />
-                Registrar evolución
-              </button>
-              <button
-                v-else
-                class="inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium transition-colors"
-                @click.stop="openView"
-              >
-                <Eye class="w-3 h-3" />
-                Ver evolución
-              </button>
-            </template>
+            <button
+              v-if="isCompleted"
+              v-permission="'evolutions.view_evolution'"
+              class="inline-flex items-center gap-1 font-medium transition-colors"
+              :class="
+                hasEvolution
+                  ? 'text-green-600 hover:text-green-700'
+                  : 'text-primary-600 hover:text-primary-700'
+              "
+              @click.stop="hasEvolution ? openView() : openCreate()"
+            >
+              <component :is="hasEvolution ? Eye : FileText" class="w-3 h-3" />
+              {{ hasEvolution ? 'Ver evolución' : 'Registrar evolución' }}
+            </button>
           </div>
         </div>
 

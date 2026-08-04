@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { usePatientsStore } from '@/stores/patients.store'
 import type { Patient } from '@/types'
 import PatientsHeader from '@/components/patients/PatientsHeader.vue'
@@ -10,6 +10,17 @@ const store = usePatientsStore()
 
 const showModal = ref(false)
 const selectedPatient = ref<Patient | null>(null)
+const search = ref('')
+
+const filteredItems = computed(() => {
+  const q = search.value.trim().toLowerCase()
+  if (!q) return store.items
+
+  return store.items.filter(item => {
+    const fullName = `${item.first_name} ${item.last_name}`.toLowerCase()
+    return fullName.includes(q) || String(item.dni).includes(q)
+  })
+})
 
 
 onMounted(() => {
@@ -35,13 +46,14 @@ function closeModal() {
 <template>
   <div>
     <PatientsHeader
-      :total="store.items.length"
+      v-model:search="search"
+      :total="filteredItems.length"
       :loading="store.loading"
       @refresh="onRefresh"
     />
 
     <PatientsTable
-      :items="store.items"
+      :items="filteredItems"
       :loading="store.loading"
       @view="openDetail"
     />

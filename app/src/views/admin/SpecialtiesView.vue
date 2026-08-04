@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { Plus, HeartPulse } from 'lucide-vue-next'
+import { ref, computed, onMounted } from 'vue'
+import { Plus, HeartPulse, Search, X } from 'lucide-vue-next'
 import { useSpecialtiesStore } from '@/stores/specialties.store'
 import { useUiStore } from '@/stores/ui.store'
 import type { Specialty } from '@/types'
@@ -17,6 +17,14 @@ const modalMode = ref<ModalMode>(null)
 const selected = ref<Specialty | null>(null)
 const modalLoading = ref(false)
 const formRef = ref<InstanceType<typeof SpecialtiesForm> | null>(null)
+const search = ref('')
+
+const filteredItems = computed(() => {
+  const q = search.value.trim().toLowerCase()
+  if (!q) return store.items
+
+  return store.items.filter(item => item.name.toLowerCase().includes(q))
+})
 
 onMounted(() => {
   store.fetchAll()
@@ -104,20 +112,42 @@ function getTitle() {
         </div>
         <div>
           <h1 class="text-xl font-semibold text-slate-900">Especialidades</h1>
-          <p class="text-xs text-slate-400">{{ store.items.length }} registros</p>
+          <p class="text-xs text-slate-400">{{ filteredItems.length }} registros</p>
         </div>
       </div>
-      <button class="btn-primary" 
-        v-permission="'doctor.add_specialty'"
-        @click="openCreate">
-        <Plus class="w-4 h-4" />
-        Agregar
-      </button>
+      <div class="flex items-center gap-2">
+        <div class="relative w-full sm:w-56">
+          <Search
+            class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400 pointer-events-none"
+          />
+
+          <input
+            v-model="search"
+            type="text"
+            placeholder="Buscar por nombre..."
+            class="input h-9 w-full !pl-10 pr-9 text-sm"
+          />
+
+          <button
+            v-if="search"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            @click="search = ''"
+          >
+            <X class="size-4" />
+          </button>
+        </div>
+        <button class="btn-primary flex-shrink-0" 
+          v-permission="'doctor.add_specialty'"
+          @click="openCreate">
+          <Plus class="w-4 h-4" />
+          Agregar
+        </button>
+      </div>
     </div>
 
     <!-- Table -->
     <SpecialtiesTable
-      :items="store.items"
+      :items="filteredItems"
       :loading="store.loading"
       @edit="openEdit"
       @delete="openDelete"
