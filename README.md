@@ -25,7 +25,7 @@ El sistema consume los servicios expuestos por el backend Django mediante una AP
 
 ## Deploy
 
-- 🚀 [**DEPLOY.md**](https://github.com/francodevarg/trabajo_final_tudw_frontend_admin/blob/master/DEPLOY.md): guía de instalación, configuración del entorno.
+- 🚀 [**DEPLOY.md**](https://github.com/francodevarg/trabajo_final_tudw_frontend_admin/blob/main/DEPLOY.md): guía de instalación, configuración del entorno.
 
 
 ## Screenshots
