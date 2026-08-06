@@ -97,10 +97,6 @@ export const ROLE_ACTIONS: Partial<Record<UserRole, RoleActions>> = {
 
   ADMIN: {
     scheduled: ['check-in', 'cancel', 'no-show'],
-
-    checked_in: ['start', 'cancel'],
-
-    in_progress: ['complete']
   }
 }
 
